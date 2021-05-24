@@ -10,13 +10,8 @@ function Product({ product }) {
         <Card.Img src={product.image} />
       </Link>
       <Card.Body>
-        <Link tp={`/product/${product._id}`}>
-          <Card.Title
-            as="div"
-            className={
-              product.name.length < 30 ? "text-dark pb-4" : "text-dark"
-            }
-          >
+        <Link to={`/product/${product._id}`}>
+          <Card.Title as="div">
             <strong>{product.name} </strong>
           </Card.Title>
         </Link>

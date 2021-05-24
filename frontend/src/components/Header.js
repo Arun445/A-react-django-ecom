@@ -5,9 +5,9 @@ function Header() {
   return (
     <header>
       <Navbar
-        bg="primary"
+        bg="secondary"
         expand="lg"
-        className="py-4"
+        className="py-4 Navbar"
         variant="dark"
         collapseOnSelect
       >
