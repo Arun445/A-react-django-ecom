@@ -47,7 +47,7 @@ class Order(models.Model):
     dateCreated = models.DateTimeField(auto_now_add=True)
     _id= models.AutoField(primary_key=True, editable=False)
     def __str__(self):
-        return str(self.dateCreated)
+        return str(self.dateCreated)[0:16]
 
 class OrderItems(models.Model):
     product=models.ForeignKey(Product, on_delete=models.CASCADE)

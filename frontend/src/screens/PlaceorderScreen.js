@@ -13,23 +13,45 @@ import { Link } from "react-router-dom";
 import FormContainer from "../components/FormContainer";
 import { useDispatch, useSelector } from "react-redux";
 import { addPaymentMethod } from "../actions/cartActions";
+import { createOrder } from "../actions/orderActions";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 import CheckoutSteps from "../components/CheckoutSteps";
+import { ORDER_CREATE_RESET } from "../constants/orderConstants";
 
-function PlaceorderScreen() {
-  const dispatch = useDispatch();
+function PlaceorderScreen({ history }) {
+  const orderCreate = useSelector((state) => state.orderCreate);
+  const { order, success, error } = orderCreate;
 
   const cart = useSelector((state) => state.cart);
   const { shippingAddress, cartItems, paymentMethod } = cart;
 
+  const dispatch = useDispatch();
+
+  const totalPrice = cartItems
+    .reduce((acc, item) => acc + Number(item.quantity) * Number(item.price), 0)
+    .toFixed(2);
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
-  useEffect(() => {}, [dispatch, userInfo, shippingAddress]);
+  useEffect(() => {
+    if (success) {
+      history.push(`/order/${order._id}`);
+      dispatch({ type: ORDER_CREATE_RESET });
+    }
+  }, [dispatch, success, history]);
 
   const placeOrder = () => {
-    console.log("placeorder");
+    dispatch(
+      createOrder({
+        shippingAddress,
+        cartItems,
+        paymentMethod,
+        shippingPrice: "0.00",
+        totalPrice,
+      })
+    );
   };
 
   return (
@@ -113,17 +135,11 @@ function PlaceorderScreen() {
             <ListGroup.Item>
               <Row>
                 <Col>Total</Col>
-                <Col>
-                  $
-                  {cartItems
-                    .reduce(
-                      (acc, item) =>
-                        acc + Number(item.quantity) * Number(item.price),
-                      0
-                    )
-                    .toFixed(2)}
-                </Col>
+                <Col>${totalPrice}</Col>
               </Row>
+            </ListGroup.Item>
+            <ListGroup.Item>
+              {error && <Message variant="danger">{error}</Message>}
             </ListGroup.Item>
             <ListGroup.Item>
               <Button
