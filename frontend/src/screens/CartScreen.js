@@ -22,6 +22,9 @@ function CartScreen({ match, location, history }) {
   const cart = useSelector((state) => state.cart);
   const { cartItems } = cart;
 
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
   const dispatch = useDispatch();
   useEffect(() => {
     if (productId) {
@@ -31,9 +34,14 @@ function CartScreen({ match, location, history }) {
 
   const removeFromCartHandler = (id) => {
     dispatch(removeFromCart(id));
+    history.push("/cart");
   };
   const checkoutHandler = () => {
-    history.push("/login?redirect=shipping");
+    if (userInfo) {
+      history.push("/shipping");
+    } else {
+      history.push("/login?redirect=shipping");
+    }
   };
 
   return (
@@ -90,7 +98,7 @@ function CartScreen({ match, location, history }) {
           </ListGroup>
         </Col>
         <Col md={4}>
-          <Card className="mt-3 ">
+          <Card className="mt-5 ">
             <ListGroup variant="flush">
               <ListGroup.Item>
                 <h3>
