@@ -1,18 +1,7 @@
-import React, { useState, useEffect } from "react";
-import {
-  Form,
-  Button,
-  Card,
-  Container,
-  Col,
-  Row,
-  ListGroup,
-  Image,
-} from "react-bootstrap";
+import React, { useEffect } from "react";
+import { Button, Container, Col, Row, ListGroup, Image } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import FormContainer from "../components/FormContainer";
 import { useDispatch, useSelector } from "react-redux";
-import { addPaymentMethod } from "../actions/cartActions";
 import { createOrder } from "../actions/orderActions";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
@@ -32,9 +21,6 @@ function PlaceorderScreen({ history }) {
     .reduce((acc, item) => acc + Number(item.quantity) * Number(item.price), 0)
     .toFixed(2);
 
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin;
-
   useEffect(() => {
     if (cartItems.length === 0) {
       history.push("/cart");
@@ -43,7 +29,7 @@ function PlaceorderScreen({ history }) {
       history.push(`/order/${order._id}`);
       dispatch({ type: ORDER_CREATE_RESET });
     }
-  }, [dispatch, success, history, cartItems]);
+  }, [dispatch, success, history, cartItems, order._id]);
 
   const placeOrder = () => {
     dispatch(

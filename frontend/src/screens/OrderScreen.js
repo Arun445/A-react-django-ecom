@@ -1,18 +1,9 @@
 import React, { useState, useEffect } from "react";
-import {
-  Form,
-  Button,
-  Card,
-  Container,
-  Col,
-  Row,
-  ListGroup,
-  Image,
-} from "react-bootstrap";
+import { Container, Col, Row, ListGroup, Image } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import FormContainer from "../components/FormContainer";
+
 import { useDispatch, useSelector } from "react-redux";
-import { addPaymentMethod } from "../actions/cartActions";
+
 import { payOrder, getOrderDetails } from "../actions/orderActions";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
@@ -27,9 +18,6 @@ function OrderScreen({ history, match }) {
 
   const orderDetails = useSelector((state) => state.orderDetails);
   const { order, error, loading } = orderDetails;
-
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin;
 
   const orderPay = useSelector((state) => state.orderPay);
   const { loading: loadingPay, success: successPay } = orderPay;

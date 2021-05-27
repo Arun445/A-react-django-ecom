@@ -27,7 +27,9 @@ function LoginScreen({ history, location }) {
     e.preventDefault();
     dispatch(login(email, password));
   };
-  return (
+  return userInfo ? (
+    <div></div>
+  ) : (
     <FormContainer>
       <h1 className="text-center mt-4">Sign in</h1>
 

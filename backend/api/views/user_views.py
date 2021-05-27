@@ -6,7 +6,7 @@ from ..serializers import UserSerializer, UserSerializerWithToken
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from rest_framework import status
+from rest_framework import serializers, status
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -42,6 +42,13 @@ def getUserProfile(request):
     serializer = UserSerializer(user, many=False)
     return Response(serializer.data)
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getUserById(request, pk):
+    user = User.objects.get(id=pk)
+    serializer = UserSerializer(user, many=False)
+    return Response(serializer.data)
+
 
 @api_view(['POST'])
 def registerUser(request):
@@ -69,7 +76,7 @@ def updateUserProfile(request):
     serializer = UserSerializerWithToken(user, many=False)
     
     data = request.data
-    print(user)
+    
     if user.first_name == data['name'] and user.email == data['email'] and data['password'] == '':
         detail = {'detail':"You didn't change anything"}
         return Response(detail, status=status.HTTP_400_BAD_REQUEST)
@@ -88,4 +95,29 @@ def updateUserProfile(request):
 
         user.save()
         return Response(serializer.data)
+
+@api_view(['PUT'])
+@permission_classes([IsAdminUser])
+def editUser(request,pk):
+    user = User.objects.get(id=pk)  
+    data = request.data   
+
+    user.first_name = data['name']
+    user.username = data['email']
+    user.email = data['email']
+    user.isAdmin = data['IsAdmin']
+
+    user.save()
+    serializer = UserSerializer(user,many=False)
     
+    return Response(serializer.data)
+    
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAdminUser])
+def userDelete(request, pk):
+    user = User.objects.get(id=pk)
+    user.delete()
+    
+    return Response('deleted')

@@ -22,3 +22,25 @@ def getProduct(request, pk):
     product = Product.objects.get(_id=pk)
     serializer = ProductSerializer(product, many=False)
     return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAdminUser])
+def createProduct(request):
+    data=request.data
+    user = request.user
+    product = Product.objects.create(
+        user=user,
+        name=data['name'],
+        #image=data['image'],
+        brand=data['brand'],
+        category=data['category'],
+        description=data['description'],
+        price=data['price'],
+        countInStock=data['countInStock'],
+        
+    )
+
+    serializer = ProductSerializer(product, many=False)
+    return Response(serializer.data)
+

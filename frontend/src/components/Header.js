@@ -73,6 +73,23 @@ function Header() {
                   </LinkContainer>
                 </h6>
               )}
+              {userInfo && userInfo.isAdmin && (
+                <NavDropdown as="h6" title="Admin" id="nav-dropdown">
+                  <h6>
+                    <LinkContainer to="/create">
+                      <NavDropdown.Item className="mt-1 mb-1 pt-3 pb-3">
+                        create
+                      </NavDropdown.Item>
+                    </LinkContainer>
+
+                    <LinkContainer to="/users">
+                      <NavDropdown.Item className="mt-1 mb-1 pt-3 pb-3">
+                        users
+                      </NavDropdown.Item>
+                    </LinkContainer>
+                  </h6>
+                </NavDropdown>
+              )}
             </Nav>
           </Navbar.Collapse>
         </Container>

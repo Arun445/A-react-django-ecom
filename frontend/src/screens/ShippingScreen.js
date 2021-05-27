@@ -41,7 +41,7 @@ function ShippingScreen({ history }) {
       setCity(shippingAddress.city);
       setContry(shippingAddress.country);
     }
-  }, [dispatch, userInfo, shippingAddress, cartItems]);
+  }, [dispatch, userInfo, shippingAddress, cartItems, history]);
 
   const submitHandler = (e) => {
     e.preventDefault();

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Form,
   Button,
@@ -10,7 +10,6 @@ import {
   Image,
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import FormContainer from "../components/FormContainer";
 import { useDispatch, useSelector } from "react-redux";
 import { addPaymentMethod } from "../actions/cartActions";
 import Message from "../components/Message";
