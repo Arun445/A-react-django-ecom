@@ -28,6 +28,9 @@ function PaymentScreen({ history }) {
   if (!shippingAddress.address) {
     history.push("/shipping");
   }
+  if (cartItems.length === 0) {
+    history.push("/cart");
+  }
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -75,35 +78,20 @@ function PaymentScreen({ history }) {
                             className="mb-2 mt-2"
                             type="radio"
                             name="paymentMethod"
-                            id="Master Card"
+                            id="Cash or Credit"
                             onChange={(e) => {
                               setPaymentMethod(e.target.id);
                             }}
                           />
                         </Col>
                         <Col>
-                          <Form.Label className="mt-2">Master Card</Form.Label>
+                          <Form.Label className="mt-2">
+                            Cash or Credit
+                          </Form.Label>
                         </Col>
                       </Row>
                     </ListGroup.Item>
-                    <ListGroup.Item>
-                      <Row>
-                        <Col md={1}>
-                          <Form.Check
-                            className="mb-2 mt-2 "
-                            type="radio"
-                            name="paymentMethod"
-                            id="Kazkas"
-                            onChange={(e) => {
-                              setPaymentMethod(e.target.id);
-                            }}
-                          />
-                        </Col>
-                        <Col>
-                          <Form.Label className="mt-2">Kazkas</Form.Label>
-                        </Col>
-                      </Row>
-                    </ListGroup.Item>
+
                     <ListGroup.Item>
                       <Button
                         variant="primary"

@@ -32,13 +32,16 @@ function ShippingScreen({ history }) {
   const { userInfo } = userLogin;
 
   useEffect(() => {
+    if (cartItems.length === 0) {
+      history.push("/cart");
+    }
     if (shippingAddress) {
       setAddress(shippingAddress.address);
       setZipcode(shippingAddress.zipcode);
       setCity(shippingAddress.city);
       setContry(shippingAddress.country);
     }
-  }, [dispatch, userInfo, shippingAddress]);
+  }, [dispatch, userInfo, shippingAddress, cartItems]);
 
   const submitHandler = (e) => {
     e.preventDefault();

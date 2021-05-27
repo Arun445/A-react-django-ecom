@@ -21,7 +21,7 @@ import { ORDER_CREATE_RESET } from "../constants/orderConstants";
 
 function PlaceorderScreen({ history }) {
   const orderCreate = useSelector((state) => state.orderCreate);
-  const { order, success, error } = orderCreate;
+  const { order, success, error, loading } = orderCreate;
 
   const cart = useSelector((state) => state.cart);
   const { shippingAddress, cartItems, paymentMethod } = cart;
@@ -36,11 +36,14 @@ function PlaceorderScreen({ history }) {
   const { userInfo } = userLogin;
 
   useEffect(() => {
+    if (cartItems.length === 0) {
+      history.push("/cart");
+    }
     if (success) {
       history.push(`/order/${order._id}`);
       dispatch({ type: ORDER_CREATE_RESET });
     }
-  }, [dispatch, success, history]);
+  }, [dispatch, success, history, cartItems]);
 
   const placeOrder = () => {
     dispatch(
@@ -139,6 +142,7 @@ function PlaceorderScreen({ history }) {
               </Row>
             </ListGroup.Item>
             <ListGroup.Item>
+              {loading && <Loader />}
               {error && <Message variant="danger">{error}</Message>}
             </ListGroup.Item>
             <ListGroup.Item>
