@@ -93,3 +93,18 @@ def getMyOrders(request):
         return Response(serialier.data)
 
     
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def getOrders(request):
+    
+
+    order = Order.objects.all()
+    
+    if len(order) == 0:
+        return Response({'detail':'No orders'},status=status.HTTP_400_BAD_REQUEST)
+    else:
+        serialier = OrderSerializer(order,many=True)
+        return Response(serialier.data)
+
+    

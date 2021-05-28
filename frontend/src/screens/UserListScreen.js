@@ -66,7 +66,7 @@ function UserListScreen({ history }) {
                 </td>
 
                 <td>
-                  <LinkContainer to={`/users/edit/${user._id}`}>
+                  <LinkContainer to={`/user/edit/${user._id}`}>
                     <Button variant="light" className="btn-sm">
                       <i className="far fa-edit"></i>
                     </Button>

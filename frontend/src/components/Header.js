@@ -76,9 +76,9 @@ function Header() {
               {userInfo && userInfo.isAdmin && (
                 <NavDropdown as="h6" title="Admin" id="nav-dropdown">
                   <h6>
-                    <LinkContainer to="/create">
+                    <LinkContainer to="/products">
                       <NavDropdown.Item className="mt-1 mb-1 pt-3 pb-3">
-                        create
+                        Products
                       </NavDropdown.Item>
                     </LinkContainer>
 

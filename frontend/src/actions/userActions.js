@@ -222,7 +222,7 @@ export const getUserProfile = (id) => async (dispatch, getState) => {
 };
 
 export const editUserProfile =
-  (name, email, isAdmin) => async (dispatch, getState) => {
+  (id, name, email, isAdmin) => async (dispatch, getState) => {
     try {
       dispatch({ type: USER_EDIT_REQUEST });
 
@@ -238,7 +238,7 @@ export const editUserProfile =
       };
 
       const { data } = await axios.put(
-        `/api/users/profile/edit/${id}/`,
+        `/api/users/edit/${id}/`,
         { name: name, email: email, isAdmin: isAdmin },
         config
       );

@@ -102,15 +102,20 @@ def editUser(request,pk):
     user = User.objects.get(id=pk)  
     data = request.data   
 
-    user.first_name = data['name']
-    user.username = data['email']
-    user.email = data['email']
-    user.isAdmin = data['IsAdmin']
+    if user.first_name == data['name'] and user.email == data['email'] and user.is_staff == data['isAdmin']:
+        detail = {'detail':"You didn't change anything"}
+        return Response(detail, status=status.HTTP_400_BAD_REQUEST)
+    else:     
+        user.first_name = data['name']
+        user.username = data['email']
+        user.email = data['email']
+        user.is_staff = data['isAdmin']
+        
 
-    user.save()
-    serializer = UserSerializer(user,many=False)
-    
-    return Response(serializer.data)
+        user.save()
+        serializer = UserSerializer(user,many=False)
+        
+        return Response(serializer.data)
     
 
 
