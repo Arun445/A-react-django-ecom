@@ -3,12 +3,12 @@ from django.shortcuts import render
 from django.contrib.auth.models import User
 
 from ..models import Product, Order, ShippingAddress, OrderItems
-from ..serializers import ProductSerializer,OrderSerializer
+from ..serializers import ProductSerializer,OrderSerializer,ReviewSerializer
 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from rest_framework import status
+from rest_framework import serializers, status
 
 from datetime import datetime
 
@@ -20,8 +20,6 @@ from datetime import datetime
 @permission_classes([IsAuthenticated])
 def getOrderById(request, pk):
     user = request.user
-    
-
     try:
         order = Order.objects.get(_id=pk)
         if user.is_staff or order.user == user:
@@ -48,32 +46,17 @@ def getMyOrders(request):
         serialier = OrderSerializer(order,many=True)
         return Response(serialier.data)
 
+
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
 def getOrders(request):
-    
-
     order = Order.objects.all()
-    
     if len(order) == 0:
         return Response({'detail':'No orders'},status=status.HTTP_400_BAD_REQUEST)
     else:
         serialier = OrderSerializer(order,many=True)
         return Response(serialier.data)
 
-
-    
-
-@api_view(['PUT'])
-@permission_classes([IsAdminUser])
-def orderIsDelivered(request):
-    data = request.data
-    
-    order = Order.objects.get(_id=data)
-    order.isDelivered = True
-    order.deliveredAt = datetime.now()
-    order.save()
-    return Response('Order is delivered')
     
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -122,3 +105,18 @@ def updateOrderToPay(request,pk):
     
     order.save()
     return Response('Order was paid')
+
+
+@api_view(['PUT'])
+@permission_classes([IsAdminUser])
+def orderIsDelivered(request):
+    data = request.data
+    
+    order = Order.objects.get(_id=data)
+    order.isDelivered = True
+    order.deliveredAt = datetime.now()
+    order.save()
+    return Response('Order is delivered')
+
+
+

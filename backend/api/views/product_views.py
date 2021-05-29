@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 
-from ..models import Product
+from ..models import Product,Review
 from ..serializers import ProductSerializer
 
 from rest_framework.response import Response
@@ -108,3 +108,39 @@ def uploadImage(request):
     product.image = request.FILES.get('image')
     product.save()
     return Response('image uploaded')
+
+#----------------REVIEWS---------------
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def createProductReview(request, pk):
+    user = request.user
+    data= request.data
+    product= Product.objects.get(_id=pk)
+
+    alreadyExists = product.review_set.filter(user=user).exists()
+    if alreadyExists:
+        return Response({'detail':'You have already wrote a review on this product'}, status=status.HTTP_400_BAD_REQUEST)
+    elif data['rating'] ==0:
+        return Response({'detail':'Please select a rating from 1-5'}, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        review = Review.objects.create(
+            user=user,
+            product=product,
+            name=user.first_name,
+            rating=data['rating'],
+            comment =data['comment'],
+        )
+        reviews = product.review_set.all()
+        product.numReviews = len(reviews)
+        total = 0
+        for review in reviews:
+            total += review.rating 
+
+        product.rating = total / len(reviews)
+        product.save()
+
+        
+        
+        return Response('Review was added')
+ 
