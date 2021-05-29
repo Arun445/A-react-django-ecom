@@ -27,14 +27,11 @@ function ProductListScreen({ history }) {
   const selectedForDelete = (id) => {
     const newNum = Number(id);
     if (deleteSelected.find((element) => element === newNum)) {
-      console.log(newNum);
       const index = deleteSelected.indexOf(newNum);
       deleteSelected.splice(index, 1);
-      console.log(deleteSelected);
     } else if (newNum === 0) {
     } else {
       setDeleteSelected([...deleteSelected, newNum]);
-      console.log(deleteSelected);
     }
   };
   const [deleteSelected, setDeleteSelected] = useState([]);
@@ -69,7 +66,6 @@ function ProductListScreen({ history }) {
     } else if (userInfo && userInfo.isAdmin && !successListGet) {
       dispatch(listProducts());
     } else if (!deleteListSuccess && !successDelete) {
-      console.log("pasikeicia");
       selectedForDelete(productForDelete);
       setProductForDelete(0);
     } else {

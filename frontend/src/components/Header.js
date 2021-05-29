@@ -3,14 +3,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { Container, Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { logout } from "../actions/userActions";
+import { useHistory } from "react-router-dom";
 
 function Header() {
   const dispatch = useDispatch();
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
+  let history = useHistory();
+
   const logoutHandler = (e) => {
+    history.push("/");
     e.preventDefault();
+
     dispatch(logout());
   };
   return (
@@ -54,7 +59,7 @@ function Header() {
                       </NavDropdown.Item>
                     </LinkContainer>
 
-                    <LinkContainer to="/logout">
+                    <LinkContainer to="/">
                       <NavDropdown.Item
                         onClick={logoutHandler}
                         className="mt-1 mb-1 pt-3 pb-3"
@@ -85,6 +90,12 @@ function Header() {
                     <LinkContainer to="/users">
                       <NavDropdown.Item className="mt-1 mb-1 pt-3 pb-3">
                         users
+                      </NavDropdown.Item>
+                    </LinkContainer>
+
+                    <LinkContainer to="/orderlist">
+                      <NavDropdown.Item className="mt-1 mb-1 pt-3 pb-3">
+                        orders
                       </NavDropdown.Item>
                     </LinkContainer>
                   </h6>

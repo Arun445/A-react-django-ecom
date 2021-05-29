@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { createProduct } from "../actions/productActions";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
+import axios from "axios";
 
 function ProductCreateScreen({ history, location }) {
   const [name, setName] = useState("");
@@ -25,10 +26,20 @@ function ProductCreateScreen({ history, location }) {
 
   const submitHandler = (e) => {
     e.preventDefault();
+
     dispatch(
-      createProduct({ name, brand, category, description, price, countInStock })
+      createProduct({
+        name,
+        image,
+        brand,
+        category,
+        description,
+        price,
+        countInStock,
+      })
     );
   };
+
   return (
     <div>
       <Link to="/products" className="btn btn-light">
@@ -69,6 +80,17 @@ function ProductCreateScreen({ history, location }) {
               value={category}
               onChange={(e) => setCategory(e.target.value)}
             />
+          </Form.Group>
+
+          <Form.Group controlId="image" className="rounded">
+            <Form.Label>Image</Form.Label>
+            <Form.Control type="text" placeholder="Image" value={image.name} />
+            <Form.File
+              id="image-file"
+              label="Choose File"
+              custom
+              onChange={(e) => setImage(e.target.files[0])}
+            ></Form.File>
           </Form.Group>
 
           <Form.Group controlId="description" className="rounded">

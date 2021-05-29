@@ -11,6 +11,12 @@ import {
   ORDER_GET_REQUEST,
   ORDER_GET_SUCCESS,
   ORDER_GET_FAIL,
+  ORDER_LIST_REQUEST,
+  ORDER_LIST_SUCCESS,
+  ORDER_LIST_FAIL,
+  ORDER_IS_DELIVERED_REQUEST,
+  ORDER_IS_DELIVERED_SUCCESS,
+  ORDER_IS_DELIVERED_FAIL,
 } from "../constants/orderConstants";
 import { CART_CREAR_ITEMS } from "../constants/cartConstants";
 
@@ -126,6 +132,62 @@ export const getOrders = () => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: ORDER_GET_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
+
+export const getOrderList = () => async (dispatch, getState) => {
+  try {
+    dispatch({ type: ORDER_LIST_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    const { data } = await axios.get(`/api/orders/`, config);
+
+    dispatch({ type: ORDER_LIST_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: ORDER_LIST_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
+
+export const orderDelivered = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: ORDER_IS_DELIVERED_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    const { data } = await axios.put(`/api/orders/delivered/`, id, config);
+
+    dispatch({ type: ORDER_IS_DELIVERED_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: ORDER_IS_DELIVERED_FAIL,
       payload:
         error.response && error.response.data.detail
           ? error.response.data.detail

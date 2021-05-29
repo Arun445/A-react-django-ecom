@@ -79,6 +79,7 @@ function ProductEditScreen({ history, match }) {
 
     formData.append("image", file);
     formData.append("product_id", productId);
+
     setUploading(true);
     try {
       const config = {
@@ -86,6 +87,7 @@ function ProductEditScreen({ history, match }) {
           "Content-Type": "mulipart/form-data",
         },
       };
+
       const { data } = await axios.post(
         `/api/products/upload/`,
         formData,
@@ -153,9 +155,8 @@ function ProductEditScreen({ history, match }) {
           <Form.Group controlId="image" className="rounded">
             <Form.Label>Image</Form.Label>
             <Form.Control
-              required
               type="text"
-              placeholder="Image"
+              disabled
               value={image}
               onChange={(e) => setImage(e.target.value)}
             />

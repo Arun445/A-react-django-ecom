@@ -28,18 +28,20 @@ def getProduct(request, pk):
 @permission_classes([IsAdminUser])
 def createProduct(request):
     data=request.data
+    print(data)
     user = request.user
     product = Product.objects.create(
         user=user,
         name=data['name'],
+        image = request.FILES.get('image'),
         #image=data['image'],
         brand=data['brand'],
         category=data['category'],
         description=data['description'],
         price=data['price'],
         countInStock=data['countInStock'],
-        
     )
+    
 
     serializer = ProductSerializer(product, many=False)
     return Response(serializer.data)
@@ -60,8 +62,9 @@ def updateProduct(request, pk):
         product.price=data['price']
         product.countInStock=data['countInStock']
         product.save()
-        serializer= ProductSerializer(product,many=False)
+        
 
+        serializer= ProductSerializer(product,many=False)
         return Response(serializer.data)
     except:
         return Response({'detail':'The product you are trying to delete dosent exist.'}, status=status.HTTP_400_BAD_REQUEST)

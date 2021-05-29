@@ -1,15 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { Container, Col, Row, ListGroup, Image } from "react-bootstrap";
+import { Container, Col, Row, ListGroup, Image, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { payOrder, getOrderDetails } from "../actions/orderActions";
+import {
+  payOrder,
+  getOrderDetails,
+  orderDelivered,
+} from "../actions/orderActions";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
-import { ORDER_PAY_RESET } from "../constants/orderConstants";
+import {
+  ORDER_PAY_RESET,
+  ORDER_IS_DELIVERED_RESET,
+} from "../constants/orderConstants";
 import { PayPalButton } from "react-paypal-button-v2";
-//import { ORDER_PAY_RESET } from '../constants/orderConstants'
 
 function OrderScreen({ history, match }) {
   const orderId = match.params.id;
@@ -22,6 +28,16 @@ function OrderScreen({ history, match }) {
   const orderPay = useSelector((state) => state.orderPay);
   const { loading: loadingPay, success: successPay } = orderPay;
 
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
+  const orderIsDelivered = useSelector((state) => state.orderIsDelivered);
+  const {
+    loading: loadingDelivered,
+    error: errorDelivered,
+    success: successDelivered,
+  } = orderIsDelivered;
+
   const dispatch = useDispatch();
   if (!loading && !error) {
     order.price = order.orderItems
@@ -30,14 +46,6 @@ function OrderScreen({ history, match }) {
         0
       )
       .toFixed(2);
-    if (order.isPaid) {
-      order.paidAt =
-        order.paidAt.split("T")[0] + " " + order.paidAt.split("T")[1];
-    }
-    if (order.isDelivered) {
-      order.deliveredAt =
-        order.deliveredAt.split("T")[0] + " " + order.deliveredAt.split("T")[1];
-    }
   }
 
   const addPayPalScript = () => {
@@ -52,8 +60,17 @@ function OrderScreen({ history, match }) {
     document.body.appendChild(script);
   };
   useEffect(() => {
-    if (!order || successPay || order._id !== Number(orderId)) {
+    if (!userInfo) {
+      history.push("/");
+    }
+    if (
+      !order ||
+      successPay ||
+      order._id !== Number(orderId) ||
+      successDelivered
+    ) {
       dispatch({ type: ORDER_PAY_RESET });
+      dispatch({ type: ORDER_IS_DELIVERED_RESET });
       dispatch(getOrderDetails(orderId));
     } else if (!order.isPaid) {
       if (!window.paypal) {
@@ -62,10 +79,14 @@ function OrderScreen({ history, match }) {
         setSdkReady(true);
       }
     }
-  }, [dispatch, order, orderId, successPay]);
+  }, [dispatch, order, orderId, successPay, successDelivered]);
 
   const successPaymentHandler = (paymentResult) => {
     dispatch(payOrder(orderId, paymentResult));
+  };
+
+  const isDeliveredHandler = (id) => {
+    dispatch(orderDelivered(id));
   };
   return loading ? (
     <Loader />
@@ -94,7 +115,8 @@ function OrderScreen({ history, match }) {
               </p>
               {order.isDelivered ? (
                 <Message variant="success">
-                  Your order is delivered on {order.deliveredAt}
+                  Your order is delivered on{" "}
+                  {order.deliveredAt.substring(0, 10)}
                 </Message>
               ) : (
                 <Message variant="info">Order not delivered</Message>
@@ -108,7 +130,9 @@ function OrderScreen({ history, match }) {
                 {order.paymentMethod}
               </p>
               {order.isPaid ? (
-                <Message variant="success">Paid on {order.paidAt}</Message>
+                <Message variant="success">
+                  Paid on {order.paidAt.substring(0, 10)}
+                </Message>
               ) : (
                 <Message variant="info">Order Not paid yet</Message>
               )}
@@ -170,7 +194,18 @@ function OrderScreen({ history, match }) {
                 <Col>${order.price}</Col>
               </Row>
             </ListGroup.Item>
-            {!order.isPaid && (
+            {userInfo.isAdmin && !order.isDelivered && order.isPaid && (
+              <ListGroup.Item>
+                <Button
+                  type="button"
+                  className="btn-block"
+                  onClick={() => isDeliveredHandler(order._id)}
+                >
+                  MARK AS DELIVERED
+                </Button>
+              </ListGroup.Item>
+            )}
+            {!order.isPaid && order.user._id === userInfo.id && (
               <ListGroup.Item>
                 {loadingPay && <Loader />}
                 {!sdkReady ? (

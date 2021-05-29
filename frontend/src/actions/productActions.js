@@ -61,7 +61,14 @@ export const listProductDetail = (id) => async (dispatch) => {
 export const createProduct = (product) => async (dispatch, getState) => {
   try {
     dispatch({ type: PRODUCT_CREATE_REQUEST });
-
+    const formData = new FormData();
+    formData.append("image", product.image);
+    formData.append("name", product.name);
+    formData.append("brand", product.brand);
+    formData.append("category", product.category);
+    formData.append("description", product.description);
+    formData.append("price", product.price);
+    formData.append("countInStock", product.countInStock);
     const {
       userLogin: { userInfo },
     } = getState();
@@ -69,10 +76,15 @@ export const createProduct = (product) => async (dispatch, getState) => {
     const config = {
       headers: {
         "Content-type": "application/json",
+        "Content-type": "mulipart/form-data",
         Authorization: `Bearer ${userInfo.token}`,
       },
     };
-    const { data } = await axios.post(`/api/products/create/`, product, config);
+    const { data } = await axios.post(
+      `/api/products/create/`,
+      formData,
+      config
+    );
 
     dispatch({ type: PRODUCT_CREATE_SUCCESS, payload: data });
   } catch (error) {
