@@ -88,7 +88,6 @@ class ProductSerializer(serializers.ModelSerializer):
     
     def get_reviews(self,obj):
         reviews = obj.review_set.all()
-        print(obj)
-        print(reviews)
+
         serializer = ReviewSerializer(reviews,many=True)
         return serializer.data

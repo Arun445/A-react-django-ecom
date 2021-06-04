@@ -11,27 +11,31 @@ import {
   ListGroup,
 } from "react-bootstrap";
 import Message from "../components/Message";
-
+import Paginate from "../components/Paginate";
 import Loader from "../components/Loader";
-
 import {
   listProducts,
   deleteProduct,
   deleteSelectedProducts,
+  addToSelected,
+  removeFromSelected,
 } from "../actions/productActions";
 import { LinkContainer } from "react-router-bootstrap";
+import { PRODUCT_DELETE_SELECTED_RESET } from "../constants/productConstants";
 
 function ProductListScreen({ history }) {
-  const dispatch = useDispatch("");
+  const dispatch = useDispatch();
 
   const selectedForDelete = (id) => {
     const newNum = Number(id);
     if (deleteSelected.find((element) => element === newNum)) {
+      dispatch(removeFromSelected(newNum));
       const index = deleteSelected.indexOf(newNum);
       deleteSelected.splice(index, 1);
     } else if (newNum === 0) {
     } else {
       setDeleteSelected([...deleteSelected, newNum]);
+      dispatch(addToSelected(newNum));
     }
   };
   const [deleteSelected, setDeleteSelected] = useState([]);
@@ -49,7 +53,14 @@ function ProductListScreen({ history }) {
   } = productDelete;
 
   const productList = useSelector((state) => state.productList);
-  const { products, loading, error, success: successListGet } = productList;
+  const {
+    products,
+    loading,
+    error,
+    success: successListGet,
+    pages,
+    page,
+  } = productList;
 
   const productDeleteSelected = useSelector(
     (state) => state.productDeleteSelected
@@ -58,18 +69,27 @@ function ProductListScreen({ history }) {
     loading: deleteListLoading,
     error: deleteListError,
     success: deleteListSuccess,
+    selected,
+    paginated,
   } = productDeleteSelected;
+
+  let keyword = history.location.search;
 
   useEffect(() => {
     if (!userInfo && !userInfo.isAdmin) {
       history.push("/");
     } else if (userInfo && userInfo.isAdmin && !successListGet) {
-      dispatch(listProducts());
+      dispatch(listProducts(keyword));
+    } else if (paginated) {
+      dispatch(listProducts(keyword));
+      dispatch({ type: PRODUCT_DELETE_SELECTED_RESET });
     } else if (!deleteListSuccess && !successDelete) {
-      selectedForDelete(productForDelete);
+      if (productForDelete !== -1) {
+        selectedForDelete(productForDelete);
+      }
       setProductForDelete(0);
     } else {
-      dispatch(listProducts());
+      dispatch(listProducts(keyword));
     }
   }, [
     dispatch,
@@ -78,13 +98,15 @@ function ProductListScreen({ history }) {
     successDelete,
     productForDelete,
     deleteListSuccess,
+    keyword,
+    paginated,
   ]);
 
   const deleteHandler = (id) => {
     dispatch(deleteProduct(id));
   };
   const deleteSelectedHandler = () => {
-    dispatch(deleteSelectedProducts({ 29: deleteSelected }));
+    dispatch(deleteSelectedProducts({ 29: selected.map((sel) => sel._id) }));
     setDeleteSelected([]);
     setProductForDelete(-1);
   };
@@ -157,51 +179,54 @@ function ProductListScreen({ history }) {
             ) : errorDelete ? (
               <Message variant="danger">{errorDelete}</Message>
             ) : (
-              <Table striped bordered hover responsive size="sm">
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>CATEGORY</th>
-                    <th>PRICE</th>
-                    <th>STOCK</th>
-                    <th>Edit</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {products.map((product) => (
-                    <tr key={product._id}>
-                      <td>
-                        <Form.Check
-                          type="checkbox"
-                          id={product._id}
-                          onChange={(e) => setProductForDelete(e.target.id)}
-                        />
-                      </td>
-                      <td>{product._id}</td>
-                      <td>{product.name}</td>
-                      <td>{product.category}</td>
-                      <td>${product.price}</td>
-                      <td>{product.countInStock}</td>
-                      <td>
-                        <LinkContainer to={`/edits/${product._id}`}>
-                          <Button variant="light" className="btn-sm">
-                            <i className="far fa-edit"></i>
-                          </Button>
-                        </LinkContainer>
-                        <Button
-                          variant="light"
-                          className="btn-sm"
-                          onClick={() => deleteHandler(product._id)}
-                        >
-                          <i className="far fa-trash-alt"></i>
-                        </Button>
-                      </td>
+              <div>
+                <Table striped bordered hover responsive size="sm">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th>CATEGORY</th>
+                      <th>PRICE</th>
+                      <th>STOCK</th>
+                      <th>Edit</th>
                     </tr>
-                  ))}
-                </tbody>
-              </Table>
+                  </thead>
+                  <tbody>
+                    {products.map((product) => (
+                      <tr key={product._id}>
+                        <td>
+                          <Form.Check
+                            type="checkbox"
+                            id={product._id}
+                            onChange={(e) => setProductForDelete(e.target.id)}
+                          />
+                        </td>
+                        <td>{product._id}</td>
+                        <td>{product.name}</td>
+                        <td>{product.category}</td>
+                        <td>${product.price}</td>
+                        <td>{product.countInStock}</td>
+                        <td>
+                          <LinkContainer to={`/edits/${product._id}`}>
+                            <Button variant="light" className="btn-sm">
+                              <i className="far fa-edit"></i>
+                            </Button>
+                          </LinkContainer>
+                          <Button
+                            variant="light"
+                            className="btn-sm"
+                            onClick={() => deleteHandler(product._id)}
+                          >
+                            <i className="far fa-trash-alt"></i>
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+                <Paginate page={page} pages={pages} isAdmin={true} />
+              </div>
             )}
           </Col>
         </Row>

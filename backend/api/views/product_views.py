@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator,PageNotAnInteger, EmptyPage
 
 from ..models import Product,Review
 from ..serializers import ProductSerializer
@@ -13,9 +14,39 @@ from rest_framework import serializers, status
 
 @api_view(['GET'])
 def getProducts(request):
-    products = Product.objects.all()
+    query = request.query_params.get('keyword')
+    if query ==None:
+        query=''
+    products = Product.objects.filter(name__icontains=query)
+    page = request.query_params.get('page')
+    
+    
+    paginator = Paginator(products,2)
+
+    try:
+        products = paginator.page(page)
+    except PageNotAnInteger:
+        products = paginator.page(1)
+    except EmptyPage:
+        products = paginator.page(paginator.num_pages)
+
+    if page ==None:
+        page=1
+    
+
+    page=int(page)
+
+    serializer = ProductSerializer(products, many=True)
+    return Response({'products' :serializer.data, 'page':page, 'pages':paginator.num_pages})
+
+
+
+@api_view(['GET'])
+def getTopProducts(request):
+    products = Product.objects.filter(rating__gte=4).order_by('-rating')[0:5]
     serializer = ProductSerializer(products, many=True)
     return Response(serializer.data)
+
 
 @api_view(['GET'])
 def getProduct(request, pk):

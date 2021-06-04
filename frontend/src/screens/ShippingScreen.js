@@ -10,18 +10,22 @@ import {
   Image,
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
-
+import products from "../products";
 import { useDispatch, useSelector } from "react-redux";
 import { addShippingAddress } from "../actions/cartActions";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 import CheckoutSteps from "../components/CheckoutSteps";
+import axios from "axios";
 
 function ShippingScreen({ history }) {
   const [address, setAddress] = useState("");
   const [zipcode, setZipcode] = useState("");
   const [city, setCity] = useState("");
   const [country, setContry] = useState("");
+  const [shippingMethod, setShippingMethod] = useState("");
+  const [shippingLocation, setShippingLocation] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const dispatch = useDispatch();
 
@@ -34,8 +38,10 @@ function ShippingScreen({ history }) {
   useEffect(() => {
     if (cartItems.length === 0) {
       history.push("/cart");
+    } else if (!userInfo) {
+      history.push("/login");
     }
-    if (shippingAddress) {
+    if (shippingAddress.address) {
       setAddress(shippingAddress.address);
       setZipcode(shippingAddress.zipcode);
       setCity(shippingAddress.city);
@@ -45,20 +51,43 @@ function ShippingScreen({ history }) {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(addShippingAddress({ address, zipcode, city, country }));
-    history.push("/payment");
+    if (shippingMethod === "Omniva" && shippingLocation !== "...") {
+      dispatch(
+        addShippingAddress({
+          address,
+          zipcode,
+          city,
+          country,
+          shippingMethod,
+          shippingLocation,
+        })
+      );
+      setSuccessMessage("");
+      history.push("/payment");
+    } else {
+      setSuccessMessage("Please select a shipping method to continue.");
+    }
   };
+
   return (
     <Container>
-      <CheckoutSteps step1 step2 />
+      {shippingAddress ? (
+        <CheckoutSteps step1 step2 step3 />
+      ) : (
+        <CheckoutSteps step1 step2 />
+      )}
+
       <Row className="mt-4">
         <Col md={1}></Col>
         <Col md={6}>
-          <Card className="">
-            <Container>
-              <h1 className="text-center mt-4">Shipping Address</h1>
+          <Form onSubmit={submitHandler}>
+            <Card className="">
+              <Container>
+                <h1 className="text-center mt-4">Shipping Address</h1>
+                {successMessage && (
+                  <Message variant="danger">{successMessage}</Message>
+                )}
 
-              <Form onSubmit={submitHandler}>
                 <Form.Group controlId="address">
                   <Form.Label>Address</Form.Label>
                   <Form.Control
@@ -103,17 +132,94 @@ function ShippingScreen({ history }) {
                   />
                 </Form.Group>
 
-                <Button
-                  variant="primary"
-                  type="submit"
-                  className=" btn-center rounded mt-2"
-                >
-                  proceed
-                </Button>
                 <Form.Group className="text-center mt-4"></Form.Group>
-              </Form>
-            </Container>
-          </Card>
+              </Container>
+            </Card>
+
+            <Card className="">
+              <Container>
+                <h5 className="text-center mt-4">Shipping method</h5>
+
+                <>
+                  <ListGroup variant="flush">
+                    <ListGroup.Item>
+                      <Row>
+                        <Col md={1}>
+                          <Form.Check
+                            className="mb-2 mt-2"
+                            type="radio"
+                            name="shippingMethod"
+                            id="Omniva"
+                            onChange={(e) => {
+                              setShippingMethod(e.target.id);
+                            }}
+                          />
+                        </Col>
+                        <Col md={2}>
+                          <Form.Label className="mt-2">
+                            <strong>Omniva</strong>
+                          </Form.Label>
+                        </Col>
+                        {shippingMethod === "Omniva" && (
+                          <Col>
+                            <Form.Control
+                              as="select"
+                              size="sm"
+                              value={shippingLocation}
+                              onChange={(e) =>
+                                setShippingLocation(e.target.value)
+                              }
+                            >
+                              <option>(...)</option>
+                              {products.map(
+                                (x) =>
+                                  x.A0_NAME === "LT" && (
+                                    <option key={x.ZIP} value={x.NAME}>
+                                      {x.NAME}
+                                    </option>
+                                  )
+                              )}
+                            </Form.Control>
+                          </Col>
+                        )}
+                      </Row>
+                    </ListGroup.Item>
+
+                    <ListGroup.Item>
+                      <Row>
+                        <Col md={1}>
+                          <Form.Check
+                            className="mb-2 mt-2"
+                            type="radio"
+                            name="shippingMethod"
+                            id="Home"
+                            onChange={(e) => {
+                              setShippingMethod(e.target.id);
+                            }}
+                          />
+                        </Col>
+                        <Col>
+                          <Form.Label className="mt-2">
+                            <strong>Home</strong>
+                          </Form.Label>
+                        </Col>
+                      </Row>
+                    </ListGroup.Item>
+
+                    <ListGroup.Item>
+                      <Button
+                        variant="primary"
+                        type="submit"
+                        className=" btn-center rounded mt-2"
+                      >
+                        proceed
+                      </Button>
+                    </ListGroup.Item>
+                  </ListGroup>
+                </>
+              </Container>
+            </Card>
+          </Form>
         </Col>
         <Col md={5}>
           <h3 className="mt-3 mb-2 ml-3">Your orders</h3>

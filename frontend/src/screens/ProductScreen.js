@@ -13,21 +13,48 @@ import {
 import Rating from "../components/Rating";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
+import { PRODUCT_CREATE_REVIEW_RESET } from "../constants/productConstants";
+import { listProductDetail, createReview } from "../actions/productActions";
 
-import { listProductDetail } from "../actions/productActions";
 function ProductScreen({ match, history }) {
   const [quantity, setQuantity] = useState(1);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+  let keyword = history.location.pathname.split("/")[2];
+
   const dispatch = useDispatch();
 
   const productDetail = useSelector((state) => state.productDetail);
   const { product, loading, error } = productDetail;
+
+  const productReviewCreate = useSelector((state) => state.productReviewCreate);
+  const {
+    success: successProductReview,
+    error: errorProductReview,
+    loading: loadingProductReview,
+  } = productReviewCreate;
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
   useEffect(() => {
+    if (successProductReview) {
+      setRating(0);
+      setComment("");
+      dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
+    } else {
+      dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
+    }
     dispatch(listProductDetail(match.params.id));
-  }, [dispatch, match]);
+  }, [dispatch, match, successProductReview]);
 
   const addToCartHandler = () => {
     history.push(`/cart/${match.params.id}?qty=${quantity}`);
-    console.log("add to cart", match.params.id);
+  };
+
+  const createReviewHandler = (e) => {
+    e.preventDefault();
+    dispatch(createReview({ comment, rating, id: match.params.id }));
   };
   return (
     <div>
@@ -35,12 +62,14 @@ function ProductScreen({ match, history }) {
         <Loader />
       ) : error ? (
         <Message variant="danger">{error}</Message>
+      ) : keyword != product._id ? (
+        <Loader />
       ) : (
         <div>
           <Link to="/" className="btn btn-light my-3">
             <i className="fas fa-arrow-left"></i> Go back
           </Link>
-          <Row>
+          <Row className="mb-5">
             <Col md={6}>
               <Image src={product.image} alt={product.name} fluid />
             </Col>
@@ -121,6 +150,88 @@ function ProductScreen({ match, history }) {
                   </ListGroup.Item>
                 </ListGroup>
               </Card>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={6}>
+              <ListGroup variant="flush">
+                <ListGroup.Item>
+                  <h4>Write a review</h4>
+                  {loadingProductReview && <Loader />}
+                  {successProductReview && (
+                    <Message variant="success">Review submitted</Message>
+                  )}
+                  {errorProductReview && (
+                    <Message variant="danger">{errorProductReview}</Message>
+                  )}
+                  {userInfo ? (
+                    <Form className="mt-3">
+                      <Form.Group controlId="rating">
+                        <Form.Label>Rating</Form.Label>
+                        <Form.Control
+                          as="select"
+                          value={rating}
+                          onChange={(e) => setRating(e.target.value)}
+                        >
+                          <option value="">Select...</option>
+                          <option value="1">1 - Poor</option>
+                          <option value="2">2 - Fair</option>
+                          <option value="3">3 - Good</option>
+                          <option value="4">4 - Very Good</option>
+                          <option value="5">5 - Excelent</option>
+                        </Form.Control>
+                      </Form.Group>
+                      <Form.Group controlId="comment">
+                        <Form.Label>Review</Form.Label>
+                        <Form.Control
+                          as="textarea"
+                          row="5"
+                          value={comment}
+                          onChange={(e) => setComment(e.target.value)}
+                        >
+                          Review
+                        </Form.Control>
+                      </Form.Group>
+                      <Button
+                        diabled={loadingProductReview}
+                        type="submit"
+                        variant="primary"
+                        onClick={createReviewHandler}
+                      >
+                        Submit
+                      </Button>
+                    </Form>
+                  ) : (
+                    <Message variant="info">
+                      If you wanna write a review please{" "}
+                      <Link to={`/login?redirect=product/${product._id}`}>
+                        login
+                      </Link>
+                    </Message>
+                  )}
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <h4 className="mt-2">Reviews</h4>
+                </ListGroup.Item>
+
+                {product.reviews.length == 0 && (
+                  <Message variant="info">No reviews</Message>
+                )}
+
+                {product.reviews.map((review) => (
+                  <ListGroup.Item key={review._id} variant="">
+                    <p>
+                      <strong>{review.name}</strong>
+                    </p>
+
+                    <Rating value={review.rating} color={"#f8e825"} />
+                    <p className="mt-1">
+                      {review.dateCreated.substring(0, 10)}
+                    </p>
+                    <p>{review.comment}</p>
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
             </Col>
           </Row>
         </div>

@@ -20,10 +20,16 @@ import {
   PRODUCT_DELETE_SELECTED_SUCCESS,
   PRODUCT_DELETE_SELECTED_FAIL,
   PRODUCT_DELETE_SELECTED_RESET,
+  PRODUCT_DELETE_SELECTED_ADD,
+  PRODUCT_DELETE_SELECTED_REMOVE,
+  PRODUCT_DELETE_SELECTED_PAGINATE,
   PRODUCT_CREATE_REVIEW_REQUEST,
   PRODUCT_CREATE_REVIEW_SUCCESS,
   PRODUCT_CREATE_REVIEW_FAIL,
   PRODUCT_CREATE_REVIEW_RESET,
+  PRODUCT_TOP_REQUEST,
+  PRODUCT_TOP_SUCCESS,
+  PRODUCT_TOP_FAIL,
 } from "../constants/productConstants";
 
 export const productListReducer = (
@@ -35,7 +41,13 @@ export const productListReducer = (
       return { loading: true, products: [] };
 
     case PRODUCT_LIST_SUCCESS:
-      return { loading: false, products: action.payload, success: true };
+      return {
+        loading: false,
+        products: action.payload.products,
+        page: action.payload.page,
+        pages: action.payload.pages,
+        success: true,
+      };
 
     case PRODUCT_LIST_FAIL:
       return { loading: false, error: action.payload };
@@ -117,7 +129,7 @@ export const productDeleteReducer = (state = {}, action) => {
 };
 
 export const productDeleteSelectedReducer = (
-  state = { success: false },
+  state = { success: false, selected: [] },
   action
 ) => {
   switch (action.type) {
@@ -125,13 +137,38 @@ export const productDeleteSelectedReducer = (
       return { loading: true };
 
     case PRODUCT_DELETE_SELECTED_SUCCESS:
-      return { loading: false, success: true };
+      return {
+        loading: false,
+        success: true,
+        selected: action.payload,
+        paginated: false,
+      };
+
+    case PRODUCT_DELETE_SELECTED_ADD:
+      const item = action.payload;
+      return {
+        ...state,
+        paginated: false,
+        selected: [...state.selected, item],
+      };
+
+    case PRODUCT_DELETE_SELECTED_REMOVE:
+      return {
+        ...state,
+        paginated: false,
+        selected: state.selected.filter(
+          (card) => card._id !== action.payload._id
+        ),
+      };
 
     case PRODUCT_DELETE_SELECTED_FAIL:
       return { loading: false, error: action.payload };
 
     case PRODUCT_DELETE_SELECTED_RESET:
-      return { success: false };
+      return { success: false, selected: [], paginated: false };
+
+    case PRODUCT_DELETE_SELECTED_PAGINATE:
+      return { ...state, paginated: true };
 
     default:
       return state;
@@ -151,6 +188,22 @@ export const productReviewCreateReducer = (state = {}, action) => {
 
     case PRODUCT_CREATE_REVIEW_RESET:
       return {};
+
+    default:
+      return state;
+  }
+};
+
+export const productTopRatedReducer = (state = { products: [] }, action) => {
+  switch (action.type) {
+    case PRODUCT_TOP_REQUEST:
+      return { loading: true };
+
+    case PRODUCT_TOP_SUCCESS:
+      return { loading: false, products: action.payload };
+
+    case PRODUCT_TOP_FAIL:
+      return { loading: false, error: action.payload };
 
     default:
       return state;

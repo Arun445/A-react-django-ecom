@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Container, Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
+import SearchBox from "./SearchBox";
 import { logout } from "../actions/userActions";
 import { useHistory } from "react-router-dom";
+import { useSpring, animated, config } from "react-spring";
 
 function Header() {
   const dispatch = useDispatch();
@@ -35,6 +37,8 @@ function Header() {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ml-auto ">
+              <SearchBox className="" />
+
               <h6>
                 <LinkContainer to="/cart">
                   <Nav.Link>
@@ -42,12 +46,42 @@ function Header() {
                   </Nav.Link>
                 </LinkContainer>
               </h6>
+              {userInfo && userInfo.isAdmin && (
+                <NavDropdown
+                  as="h6"
+                  title="Admin"
+                  id="nav-dropdown"
+                  className="mr-1"
+                >
+                  <h6>
+                    <LinkContainer to="/products">
+                      <NavDropdown.Item className="mt-1 mb-1 pt-3 pb-3">
+                        Products
+                      </NavDropdown.Item>
+                    </LinkContainer>
+
+                    <LinkContainer to="/users">
+                      <NavDropdown.Item className="mt-1 mb-1 pt-3 pb-3">
+                        users
+                      </NavDropdown.Item>
+                    </LinkContainer>
+
+                    <LinkContainer to="/orderlist">
+                      <NavDropdown.Item className="mt-1 mb-1 pt-3 pb-3">
+                        orders
+                      </NavDropdown.Item>
+                    </LinkContainer>
+                  </h6>
+                </NavDropdown>
+              )}
               {userInfo ? (
                 <NavDropdown
                   as="h6"
                   title={
                     userInfo.name.indexOf(" ") >= 0
                       ? userInfo.name.split(" ")[0]
+                      : userInfo.name.length > 15
+                      ? userInfo.name.substring(0, 15)
                       : userInfo.name
                   }
                   id="nav-dropdown"
@@ -77,29 +111,6 @@ function Header() {
                     </Nav.Link>
                   </LinkContainer>
                 </h6>
-              )}
-              {userInfo && userInfo.isAdmin && (
-                <NavDropdown as="h6" title="Admin" id="nav-dropdown">
-                  <h6>
-                    <LinkContainer to="/products">
-                      <NavDropdown.Item className="mt-1 mb-1 pt-3 pb-3">
-                        Products
-                      </NavDropdown.Item>
-                    </LinkContainer>
-
-                    <LinkContainer to="/users">
-                      <NavDropdown.Item className="mt-1 mb-1 pt-3 pb-3">
-                        users
-                      </NavDropdown.Item>
-                    </LinkContainer>
-
-                    <LinkContainer to="/orderlist">
-                      <NavDropdown.Item className="mt-1 mb-1 pt-3 pb-3">
-                        orders
-                      </NavDropdown.Item>
-                    </LinkContainer>
-                  </h6>
-                </NavDropdown>
               )}
             </Nav>
           </Navbar.Collapse>

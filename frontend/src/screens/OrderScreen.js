@@ -9,12 +9,14 @@ import {
   getOrderDetails,
   orderDelivered,
 } from "../actions/orderActions";
+
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 import {
   ORDER_PAY_RESET,
   ORDER_IS_DELIVERED_RESET,
 } from "../constants/orderConstants";
+
 import { PayPalButton } from "react-paypal-button-v2";
 
 function OrderScreen({ history, match }) {
@@ -71,6 +73,7 @@ function OrderScreen({ history, match }) {
     ) {
       dispatch({ type: ORDER_PAY_RESET });
       dispatch({ type: ORDER_IS_DELIVERED_RESET });
+
       dispatch(getOrderDetails(orderId));
     } else if (!order.isPaid) {
       if (!window.paypal) {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Form,
   Button,
@@ -18,11 +18,18 @@ import CheckoutSteps from "../components/CheckoutSteps";
 
 function PaymentScreen({ history }) {
   const [paymentMethod, setPaymentMethod] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const cart = useSelector((state) => state.cart);
   const { cartItems, shippingAddress } = cart;
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (paymentMethod) {
+      setSuccessMessage("");
+    }
+  }, [paymentMethod]);
 
   if (!shippingAddress.address) {
     history.push("/shipping");
@@ -34,8 +41,11 @@ function PaymentScreen({ history }) {
   const submitHandler = (e) => {
     e.preventDefault();
     if (paymentMethod) {
+      setSuccessMessage("");
       dispatch(addPaymentMethod(paymentMethod));
       history.push("/placeorder");
+    } else {
+      setSuccessMessage("Please select a payment method to continue.");
     }
   };
 
@@ -48,6 +58,9 @@ function PaymentScreen({ history }) {
           <Card className="">
             <Container>
               <h1 className="text-center mt-4">payment method</h1>
+              {successMessage && (
+                <Message variant="danger">{successMessage}</Message>
+              )}
               <Form onSubmit={submitHandler}>
                 <h5>
                   <ListGroup variant="flush">
@@ -58,7 +71,7 @@ function PaymentScreen({ history }) {
                             className="mb-2 mt-2"
                             type="radio"
                             name="paymentMethod"
-                            id="Paypal"
+                            id="PayPal"
                             onChange={(e) => {
                               setPaymentMethod(e.target.id);
                             }}
@@ -90,7 +103,6 @@ function PaymentScreen({ history }) {
                         </Col>
                       </Row>
                     </ListGroup.Item>
-
                     <ListGroup.Item>
                       <Button
                         variant="primary"

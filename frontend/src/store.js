@@ -9,6 +9,7 @@ import {
   productUpdateReducer,
   productDeleteSelectedReducer,
   productReviewCreateReducer,
+  productTopRatedReducer,
 } from "./reducers/productListReducers";
 
 import { cartReducer } from "./reducers/cartReducers";
@@ -41,6 +42,7 @@ const reducer = combineReducers({
   productUpdate: productUpdateReducer,
   productDeleteSelected: productDeleteSelectedReducer,
   productReviewCreate: productReviewCreateReducer,
+  productTopRated: productTopRatedReducer,
 
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,
@@ -79,6 +81,7 @@ const initialState = {
   cart: {
     cartItems: cartItemsFromStorage,
     shippingAddress: shippingAddressFromStorage,
+
     paymentMethod: paymentMethodFromStorage,
   },
   userLogin: { userInfo: userInfoFromStorage },

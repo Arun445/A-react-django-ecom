@@ -45,7 +45,7 @@ function ProductEditScreen({ history, match }) {
       dispatch(listProductDetail(productId));
       dispatch({ type: PRODUCT_UPDATE_RESET });
     } else {
-      if (product.reviews || product._id !== Number(productId)) {
+      if (product._id !== Number(productId)) {
         dispatch(listProductDetail(productId));
       } else {
         setName(product.name);
