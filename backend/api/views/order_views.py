@@ -67,7 +67,7 @@ def addOrderItems(request):
     order = Order.objects.create(
         user = user,
         paymentMethod = data['paymentMethod'],
-        shippingPrice = data['shippingPrice'],
+        shippingPrice = data['shippingAddress']['shippingPrice'],
         totalPrice = data['totalPrice'],
     )
     
@@ -77,6 +77,9 @@ def addOrderItems(request):
         city= data['shippingAddress']['city'],
         country= data['shippingAddress']['country'],
         postalCode= data['shippingAddress']['zipcode'],
+        shippingPrice= data['shippingAddress']['shippingPrice'],
+        shippingMethod=data['shippingAddress']['shippingMethod'],
+        shippingLocation=data['shippingAddress']['shippingLocation'],
     )
 
     for i in data['cartItems']:

@@ -15,6 +15,7 @@ function HomeScreen({ history }) {
   const { products, error, loading, page, pages } = productList;
 
   let keyword = history.location.search;
+  let location = history.location.pathname;
 
   useEffect(() => {
     dispatch(listProducts(keyword));
@@ -24,6 +25,7 @@ function HomeScreen({ history }) {
     <div>
       <h1>Lastest Products</h1>
       {!keyword && <ProductCarousel />}
+      <h1 className="mt-5 text-center">Most popular categories</h1>
 
       {loading ? (
         <Loader />
@@ -38,7 +40,12 @@ function HomeScreen({ history }) {
               </Col>
             ))}
           </Row>
-          <Paginate page={page} pages={pages} keyword={keyword} />
+          <Paginate
+            page={page}
+            pages={pages}
+            keyword={keyword}
+            location={location}
+          />
         </div>
       )}
     </div>

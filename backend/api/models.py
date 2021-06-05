@@ -68,6 +68,8 @@ class ShippingAddress(models.Model):
     postalCode = models.CharField(max_length=200, blank=True, null=True)
     country = models.CharField(max_length=200, blank=True, null=True)
     shippingPrice = models.DecimalField(max_digits=7, decimal_places=2,blank=True, null=True)
+    shippingMethod = models.CharField(max_length=200, blank=True, null=True)
+    shippingLocation = models.CharField(max_length=200, blank=True, null=True)
     _id = models.AutoField(primary_key=True, editable=False)
 
     def __str__(self):

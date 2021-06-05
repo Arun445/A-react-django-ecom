@@ -6,14 +6,16 @@ import {
   PRODUCT_DELETE_SELECTED_RESET,
   PRODUCT_DELETE_SELECTED_PAGINATE,
 } from "../constants/productConstants";
-function Paginate({ pages, page, keyword = "", isAdmin = false }) {
+function Paginate({ pages, page, keyword = "", isAdmin = false, location }) {
   if (keyword) {
     keyword = keyword.split("?keyword=")[1].split("&")[0];
   }
+  console.log(location);
+  const dispatch = useDispatch();
+
   const productDeleteSelected = useSelector(
     (state) => state.productDeleteSelected
   );
-  const dispatch = useDispatch();
   const {
     loading: deleteListLoading,
     error: deleteListError,
@@ -28,7 +30,7 @@ function Paginate({ pages, page, keyword = "", isAdmin = false }) {
           <LinkContainer
             key={x + 1}
             to={
-              !isAdmin
+              location === "/"
                 ? `/?keyword=${keyword}&page=${x + 1}`
                 : `/products?keyword=${keyword}&page=${x + 1}`
             }

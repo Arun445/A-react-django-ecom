@@ -50,38 +50,40 @@ function OrderListScreen({ history }) {
                 <Row>
                   <Col>ID:</Col>
                   <Col>
-                    <Form.Control as="select" size="sm" />
+                    <Form.Control type="number" placeholder="Id" size="sm" />
+                  </Col>
+                </Row>
+              </ListGroup.Item>
+
+              <ListGroup.Item>
+                <Row>
+                  <Col md={6}>Paid:</Col>
+                  <Col md={3}>
+                    <Form.Check type="radio" id="Omniva" />
+                  </Col>
+                  <Col md={3}>
+                    <Form.Check type="radio" id="Omniva" />
                   </Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
-                  <Col>Price:</Col>
-                  <Col>
-                    <Form.Control as="select" size="sm" />
+                  <Col md={6}>Delivered:</Col>
+                  <Col md={3}>
+                    <Form.Check type="radio" id="Omniva" />
+                  </Col>
+                  <Col md={3}>
+                    <Form.Check type="radio" id="Omniva" />
                   </Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
-                <Row>
-                  <Col>Category:</Col>
-                  <Col>
-                    <Form.Control as="select" size="sm" />
-                  </Col>
-                </Row>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Row>
-                  <Col>Stock:</Col>
-                  <Col>
-                    <Form.Control as="select" size="sm" />
-                  </Col>
-                </Row>
+                <Button variant="primary btn-block">Filter</Button>
               </ListGroup.Item>
             </ListGroup>
           </Col>
           <Col md={9}>
-            <h1>Products</h1>
+            <h1>Orders</h1>
             {loading ? (
               <Loader />
             ) : error ? (

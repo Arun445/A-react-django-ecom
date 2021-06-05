@@ -68,7 +68,7 @@ function PaymentScreen({ history }) {
                       <Row>
                         <Col md={1}>
                           <Form.Check
-                            className="mb-2 mt-2"
+                            className="mb-2 mt-2 biggerRadioButton"
                             type="radio"
                             name="paymentMethod"
                             id="PayPal"
@@ -78,7 +78,13 @@ function PaymentScreen({ history }) {
                           />
                         </Col>
                         <Col>
-                          <Form.Label className="mt-2">PAYPAL</Form.Label>
+                          <Form.Label className="mt-2">
+                            <i
+                              className="fab fa-paypal"
+                              style={{ color: "#3b7bbf" }}
+                            ></i>
+                            PAYPAL
+                          </Form.Label>
                         </Col>
                       </Row>
                     </ListGroup.Item>
@@ -87,10 +93,10 @@ function PaymentScreen({ history }) {
                       <Row>
                         <Col md={1}>
                           <Form.Check
-                            className="mb-2 mt-2"
+                            className="mb-2 mt-2 biggerRadioButton"
                             type="radio"
                             name="paymentMethod"
-                            id="Cash or Credit"
+                            id="On Delivery"
                             onChange={(e) => {
                               setPaymentMethod(e.target.id);
                             }}
@@ -98,7 +104,7 @@ function PaymentScreen({ history }) {
                         </Col>
                         <Col>
                           <Form.Label className="mt-2">
-                            Cash or Credit
+                            <i className="far fa-credit-card"></i>On Delivery
                           </Form.Label>
                         </Col>
                       </Row>

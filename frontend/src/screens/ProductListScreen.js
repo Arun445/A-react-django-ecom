@@ -39,8 +39,10 @@ function ProductListScreen({ history }) {
     }
   };
   const [deleteSelected, setDeleteSelected] = useState([]);
-
   const [productForDelete, setProductForDelete] = useState(-1);
+
+  let keyword = history.location.search;
+  let location = history.location.pathname;
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -72,8 +74,6 @@ function ProductListScreen({ history }) {
     selected,
     paginated,
   } = productDeleteSelected;
-
-  let keyword = history.location.search;
 
   useEffect(() => {
     if (!userInfo && !userInfo.isAdmin) {
@@ -136,17 +136,23 @@ function ProductListScreen({ history }) {
 
               <ListGroup.Item>
                 <Row>
-                  <Col>ID:</Col>
-                  <Col>
-                    <Form.Control as="select" size="sm" />
+                  <Col md={6}>ID:</Col>
+                  <Col md={3}>
+                    <Form.Check type="radio" id="Omniva" />
+                  </Col>
+                  <Col md={3}>
+                    <Form.Check type="radio" id="Omniva" />
                   </Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
-                  <Col>Price:</Col>
-                  <Col>
-                    <Form.Control as="select" size="sm" />
+                  <Col md={6}>Price:</Col>
+                  <Col md={3}>
+                    <Form.Check type="radio" id="Omniva" />
+                  </Col>
+                  <Col md={3}>
+                    <Form.Check type="radio" id="Omniva" />
                   </Col>
                 </Row>
               </ListGroup.Item>
@@ -154,17 +160,14 @@ function ProductListScreen({ history }) {
                 <Row>
                   <Col>Category:</Col>
                   <Col>
-                    <Form.Control as="select" size="sm" />
+                    <Form.Control as="select" size="sm">
+                      <option>a</option>
+                    </Form.Control>
                   </Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
-                <Row>
-                  <Col>Stock:</Col>
-                  <Col>
-                    <Form.Control as="select" size="sm" />
-                  </Col>
-                </Row>
+                <Button variant="primary btn-block">Filter</Button>
               </ListGroup.Item>
             </ListGroup>
           </Col>
@@ -225,7 +228,13 @@ function ProductListScreen({ history }) {
                     ))}
                   </tbody>
                 </Table>
-                <Paginate page={page} pages={pages} isAdmin={true} />
+                <Paginate
+                  page={page}
+                  pages={pages}
+                  isAdmin={true}
+                  keyword={keyword}
+                  location={location}
+                />
               </div>
             )}
           </Col>

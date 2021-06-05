@@ -14,13 +14,22 @@ from rest_framework import serializers, status
 
 @api_view(['GET'])
 def getProducts(request):
+    
     query = request.query_params.get('keyword')
     if query ==None:
         query=''
-    products = Product.objects.filter(name__icontains=query)
+        products = Product.objects.filter(name__icontains=query)
+    elif query == 'idsUp' or query == 'idsDown':
+        products = Product.objects.filter(name__icontains=query)
+    elif query == 'priceUp' or query == 'priceDown':
+        products = Product.objects.filter(name__icontains=query)
+    else:
+        products = Product.objects.filter(name__icontains=query)
+
+
+
+
     page = request.query_params.get('page')
-    
-    
     paginator = Paginator(products,2)
 
     try:

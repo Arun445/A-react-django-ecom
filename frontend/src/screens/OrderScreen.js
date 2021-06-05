@@ -116,13 +116,20 @@ function OrderScreen({ history, match }) {
                 {order.shippingAddress.address}, {order.shippingAddress.country}
                 , {order.shippingAddress.city}, {order.shippingAddress.zipcode}
               </p>
+              <p>Shipping Method: {order.shippingAddress.shippingMethod}</p>
+              {order.shippingAddress.shippingLocation && (
+                <p>
+                  Parcel Terminal Location:{" "}
+                  {order.shippingAddress.shippingLocation}
+                </p>
+              )}
               {order.isDelivered ? (
                 <Message variant="success">
                   Your order is delivered on{" "}
                   {order.deliveredAt.substring(0, 10)}
                 </Message>
               ) : (
-                <Message variant="info">Order not delivered</Message>
+                <Message variant="info">Order not delivered yet</Message>
               )}
             </ListGroup.Item>
 
@@ -132,7 +139,9 @@ function OrderScreen({ history, match }) {
                 <strong>Method: </strong>
                 {order.paymentMethod}
               </p>
-              {order.isPaid ? (
+              {order.paymentMethod === "On Delivery" ? (
+                <></>
+              ) : order.isPaid ? (
                 <Message variant="success">
                   Paid on {order.paidAt.substring(0, 10)}
                 </Message>
@@ -187,14 +196,19 @@ function OrderScreen({ history, match }) {
             <ListGroup.Item>
               <Row>
                 <Col>Shipping</Col>
-                <Col>$0.00</Col>
+                <Col>${order.shippingPrice}</Col>
               </Row>
             </ListGroup.Item>
 
             <ListGroup.Item>
               <Row>
                 <Col>Total</Col>
-                <Col>${order.price}</Col>
+                <Col>
+                  $
+                  {(Number(order.price) + Number(order.shippingPrice)).toFixed(
+                    2
+                  )}
+                </Col>
               </Row>
             </ListGroup.Item>
             {userInfo.isAdmin && !order.isDelivered && order.isPaid && (
@@ -208,19 +222,21 @@ function OrderScreen({ history, match }) {
                 </Button>
               </ListGroup.Item>
             )}
-            {!order.isPaid && order.user._id === userInfo.id && (
-              <ListGroup.Item>
-                {loadingPay && <Loader />}
-                {!sdkReady ? (
-                  <Loader />
-                ) : (
-                  <PayPalButton
-                    amount={order.totalPrice}
-                    onSuccess={successPaymentHandler}
-                  />
-                )}
-              </ListGroup.Item>
-            )}
+            {!order.isPaid &&
+              order.user._id === userInfo.id &&
+              order.paymentMethod === "PayPal" && (
+                <ListGroup.Item>
+                  {loadingPay && <Loader />}
+                  {!sdkReady ? (
+                    <Loader />
+                  ) : (
+                    <PayPalButton
+                      amount={order.totalPrice}
+                      onSuccess={successPaymentHandler}
+                    />
+                  )}
+                </ListGroup.Item>
+              )}
 
             <ListGroup.Item></ListGroup.Item>
           </ListGroup>

@@ -37,7 +37,6 @@ function PlaceorderScreen({ history }) {
         shippingAddress,
         cartItems,
         paymentMethod,
-        shippingPrice: "0.00",
         totalPrice,
       })
     );
@@ -56,6 +55,12 @@ function PlaceorderScreen({ history }) {
                 {shippingAddress.address}, {shippingAddress.country},{" "}
                 {shippingAddress.city}, {shippingAddress.zipcode}
               </p>
+              <p>Shipping Method: {shippingAddress.shippingMethod}</p>
+              {shippingAddress.shippingLocation !== "..." && (
+                <p>
+                  Parcel Terminal Location: {shippingAddress.shippingLocation}
+                </p>
+              )}
             </ListGroup.Item>
 
             <ListGroup.Item>
@@ -117,14 +122,19 @@ function PlaceorderScreen({ history }) {
             <ListGroup.Item>
               <Row>
                 <Col>Shipping</Col>
-                <Col>$0.00</Col>
+                <Col>${shippingAddress.shippingPrice.toFixed(2)}</Col>
               </Row>
             </ListGroup.Item>
 
             <ListGroup.Item>
               <Row>
                 <Col>Total</Col>
-                <Col>${totalPrice}</Col>
+                <Col>
+                  $
+                  {(
+                    Number(totalPrice) + Number(shippingAddress.shippingPrice)
+                  ).toFixed(2)}
+                </Col>
               </Row>
             </ListGroup.Item>
             <ListGroup.Item>

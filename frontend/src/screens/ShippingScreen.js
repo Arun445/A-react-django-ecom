@@ -14,9 +14,7 @@ import products from "../products";
 import { useDispatch, useSelector } from "react-redux";
 import { addShippingAddress } from "../actions/cartActions";
 import Message from "../components/Message";
-import Loader from "../components/Loader";
 import CheckoutSteps from "../components/CheckoutSteps";
-import axios from "axios";
 
 function ShippingScreen({ history }) {
   const [address, setAddress] = useState("");
@@ -24,7 +22,8 @@ function ShippingScreen({ history }) {
   const [city, setCity] = useState("");
   const [country, setContry] = useState("");
   const [shippingMethod, setShippingMethod] = useState("");
-  const [shippingLocation, setShippingLocation] = useState("");
+  const [shippingLocation, setShippingLocation] = useState("...");
+
   const [successMessage, setSuccessMessage] = useState("");
 
   const dispatch = useDispatch();
@@ -60,11 +59,27 @@ function ShippingScreen({ history }) {
           country,
           shippingMethod,
           shippingLocation,
+          shippingPrice: 1.8,
+        })
+      );
+      setSuccessMessage("");
+      history.push("/payment");
+    } else if (shippingMethod === "To My Home Address") {
+      dispatch(
+        addShippingAddress({
+          address,
+          zipcode,
+          city,
+          country,
+          shippingMethod,
+          shippingLocation,
+          shippingPrice: 2,
         })
       );
       setSuccessMessage("");
       history.push("/payment");
     } else {
+      window.scrollTo(0, 0);
       setSuccessMessage("Please select a shipping method to continue.");
     }
   };
@@ -146,7 +161,7 @@ function ShippingScreen({ history }) {
                       <Row>
                         <Col md={1}>
                           <Form.Check
-                            className="mb-2 mt-2"
+                            className="mb-2 mt-2 biggerRadioButton"
                             type="radio"
                             name="shippingMethod"
                             id="Omniva"
@@ -189,10 +204,10 @@ function ShippingScreen({ history }) {
                       <Row>
                         <Col md={1}>
                           <Form.Check
-                            className="mb-2 mt-2"
+                            className="mb-2 mt-2 biggerRadioButton"
                             type="radio"
                             name="shippingMethod"
-                            id="Home"
+                            id="To My Home Address"
                             onChange={(e) => {
                               setShippingMethod(e.target.id);
                             }}
@@ -200,7 +215,7 @@ function ShippingScreen({ history }) {
                         </Col>
                         <Col>
                           <Form.Label className="mt-2">
-                            <strong>Home</strong>
+                            <strong>To My Home Address</strong>
                           </Form.Label>
                         </Col>
                       </Row>
