@@ -50,11 +50,21 @@ def getMyOrders(request):
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
 def getOrders(request):
-    order = Order.objects.all()
-    if len(order) == 0:
+    orders = Order.objects.all()
+    if len(orders) == 0:
         return Response({'detail':'No orders'},status=status.HTTP_400_BAD_REQUEST)
     else:
-        serialier = OrderSerializer(order,many=True)
+        id_query = request.query_params.get('id')
+        isPaid_query = request.query_params.get('isPaid')
+        isDelivered_query = request.query_params.get('isDelivered')
+
+        if id_query:
+            orders.filter(_id=id_query)
+            
+        if isPaid_query == 'True':
+            orders.filter(_id=id_query)
+
+        serialier = OrderSerializer(orders,many=True)
         return Response(serialier.data)
 
     

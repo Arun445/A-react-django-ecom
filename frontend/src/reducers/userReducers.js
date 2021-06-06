@@ -29,6 +29,9 @@ import {
   USER_EDIT_SUCCESS,
   USER_EDIT_FAIL,
   USER_EDIT_RESET,
+  USER_GOOGLE_AUTH_REQUEST,
+  USER_GOOGLE_AUTH_SUCCESS,
+  USER_GOOGLE_AUTH_FAIL,
 } from "../constants/userConstants";
 
 export const userLoginReducer = (state = {}, action) => {
@@ -40,6 +43,16 @@ export const userLoginReducer = (state = {}, action) => {
       return { loading: false, userInfo: action.payload };
 
     case USER_LOGIN_FAIL:
+      return { loading: false, error: action.payload };
+
+    case USER_GOOGLE_AUTH_REQUEST:
+      return { loading: true };
+
+    case USER_GOOGLE_AUTH_SUCCESS:
+      localStorage.setItem("access", action.payload.access);
+      return { loading: false, googleInfo: action.payload };
+
+    case USER_GOOGLE_AUTH_FAIL:
       return { loading: false, error: action.payload };
 
     case USER_LOGOUT:

@@ -8,26 +8,47 @@ import Message from "../components/Message";
 import Paginate from "../components/Paginate";
 import ProductCarousel from "../components/ProductCarousel";
 import { listProducts } from "../actions/productActions";
+import { googleAuthenticate } from "../actions/userActions";
+import queryString from "query-string";
 
 function HomeScreen({ history }) {
   const dispatch = useDispatch();
   const productList = useSelector((state) => state.productList);
   const { products, error, loading, page, pages } = productList;
 
+  const userLogin = useSelector((state) => state.userLogin);
+  const { loading: loadingUser, userInfo, googleInfo } = userLogin;
+
   let keyword = history.location.search;
+
   let location = history.location.pathname;
 
   useEffect(() => {
+    const values = queryString.parse(keyword);
+    const state = values.state ? values.state : null;
+    const code = values.code ? values.code : null;
+    if (state && code) {
+      dispatch(googleAuthenticate(state, code));
+    }
+    if (keyword) {
+      history.push("/");
+    }
     dispatch(listProducts(keyword));
   }, [dispatch, keyword]);
 
+  /*<Paginate
+            page={page}
+            pages={pages}
+            keyword={keyword}
+            location={location}
+          /> */
   return (
     <div>
       <h1>Lastest Products</h1>
       {!keyword && <ProductCarousel />}
       <h1 className="mt-5 text-center">Most popular categories</h1>
 
-      {loading ? (
+      {loading || loadingUser ? (
         <Loader />
       ) : error ? (
         <Message variant={"danger"}>{error}</Message>
@@ -40,12 +61,6 @@ function HomeScreen({ history }) {
               </Col>
             ))}
           </Row>
-          <Paginate
-            page={page}
-            pages={pages}
-            keyword={keyword}
-            location={location}
-          />
         </div>
       )}
     </div>

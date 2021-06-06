@@ -4,6 +4,7 @@ from django.core.paginator import Paginator,PageNotAnInteger, EmptyPage
 
 from ..models import Product,Review
 from ..serializers import ProductSerializer
+from ..filters import ProductsFilter
 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -15,22 +16,34 @@ from rest_framework import serializers, status
 @api_view(['GET'])
 def getProducts(request):
     
+    #myFilter = ProductsFilter()
+    products = Product.objects.all()
     query = request.query_params.get('keyword')
+    id_query = request.query_params.get('id')
+    price_query = request.query_params.get('price')
+    category_query= request.query_params.get('category')
+    
     if query ==None:
         query=''
-        products = Product.objects.filter(name__icontains=query)
-    elif query == 'idsUp' or query == 'idsDown':
-        products = Product.objects.filter(name__icontains=query)
-    elif query == 'priceUp' or query == 'priceDown':
-        products = Product.objects.filter(name__icontains=query)
     else:
-        products = Product.objects.filter(name__icontains=query)
+        products = products.filter(name__icontains=query)
 
+    if id_query:
+        products = products.filter(_id=id_query)
 
+    if category_query:
+        products = products.filter(category__icontains=category_query)
+
+    if price_query == 'up':
+        products = products.filter(price__gte=0).order_by('-price')
+    elif price_query == 'down':
+        products = products.filter(price__gte=0).order_by('price')
+        
+ 
 
 
     page = request.query_params.get('page')
-    paginator = Paginator(products,2)
+    paginator = Paginator(products,8)
 
     try:
         products = paginator.page(page)

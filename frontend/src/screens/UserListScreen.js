@@ -19,6 +19,7 @@ import { LinkContainer } from "react-router-bootstrap";
 
 function UserListScreen({ history }) {
   const dispatch = useDispatch();
+  const [filterForAdmin, setFilterForAdmin] = useState();
 
   const usersList = useSelector((state) => state.usersList);
   const { users, loading, error } = usersList;
@@ -72,10 +73,24 @@ function UserListScreen({ history }) {
               <Row>
                 <Col md={6}>Admin:</Col>
                 <Col md={3}>
-                  <Form.Check type="radio" id="Omniva" />
+                  <Form.Check
+                    type="radio"
+                    name="ids"
+                    id="Yes"
+                    onChange={(e) => {
+                      setFilterForAdmin(e.target.id);
+                    }}
+                  />
                 </Col>
                 <Col md={3}>
-                  <Form.Check type="radio" id="Omniva" />
+                  <Form.Check
+                    type="radio"
+                    name="ids"
+                    id="No"
+                    onChange={(e) => {
+                      setFilterForAdmin(e.target.id);
+                    }}
+                  />
                 </Col>
               </Row>
             </ListGroup.Item>

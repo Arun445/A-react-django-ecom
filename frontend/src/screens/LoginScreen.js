@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { login } from "../actions/userActions";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
+import axios from "axios";
+import queryString from "query-string";
 
 function LoginScreen({ history, location }) {
   const [email, setEmail] = useState("");
@@ -18,6 +20,9 @@ function LoginScreen({ history, location }) {
   const { loading, userInfo, error } = userLogin;
 
   useEffect(() => {
+    const values = queryString.parse(location.search);
+    const state = values.state ? values.state : null;
+    const code = values.code ? values.code : null;
     console.log(redirect);
     if (userInfo) {
       history.push(redirect);
@@ -27,6 +32,16 @@ function LoginScreen({ history, location }) {
   const submitHandler = (e) => {
     e.preventDefault();
     dispatch(login(email, password));
+  };
+
+  const continueWithGoogle = async () => {
+    try {
+      const { data } = await axios.get(
+        `/auth/o/google-oauth2/?redirect_uri=http://localhost:3000`
+      );
+      window.location.replace(data.authorization_url);
+      //console.log(data.authorization_url);
+    } catch (err) {}
   };
   return userInfo ? (
     <div></div>
@@ -76,6 +91,7 @@ function LoginScreen({ history, location }) {
           </h6>
         </Form.Group>
       </Form>
+      <Button onClick={continueWithGoogle}>a</Button>
     </FormContainer>
   );
 }

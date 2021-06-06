@@ -14,6 +14,8 @@ function SearchBox() {
     e.preventDefault();
     if (keyword) {
       history.push(`/?keyword=${keyword}&page=1`);
+      setKeyword("");
+      displaySearch(false);
     }
   };
 
@@ -63,6 +65,7 @@ function SearchBox() {
             className="sm pr-5"
             size="sm"
             placeholder="search for.."
+            value={keyword || ""}
             onChange={(e) => setKeyword(e.target.value)}
             onBlur={
               keyword.length == 0

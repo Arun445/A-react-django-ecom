@@ -19,6 +19,8 @@ import { LinkContainer } from "react-router-bootstrap";
 
 function OrderListScreen({ history }) {
   const dispatch = useDispatch("");
+  const [filterForIsPaid, setFilterForIsPaid] = useState();
+  const [filterForIsDelivered, setFilterForIsDelivered] = useState();
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -59,10 +61,24 @@ function OrderListScreen({ history }) {
                 <Row>
                   <Col md={6}>Paid:</Col>
                   <Col md={3}>
-                    <Form.Check type="radio" id="Omniva" />
+                    <Form.Check
+                      type="radio"
+                      name="paid"
+                      id="yes"
+                      onChange={(e) => {
+                        setFilterForIsPaid(e.target.id);
+                      }}
+                    />
                   </Col>
                   <Col md={3}>
-                    <Form.Check type="radio" id="Omniva" />
+                    <Form.Check
+                      type="radio"
+                      name="paid"
+                      id="no"
+                      onChange={(e) => {
+                        setFilterForIsPaid(e.target.id);
+                      }}
+                    />
                   </Col>
                 </Row>
               </ListGroup.Item>
@@ -70,10 +86,26 @@ function OrderListScreen({ history }) {
                 <Row>
                   <Col md={6}>Delivered:</Col>
                   <Col md={3}>
-                    <Form.Check type="radio" id="Omniva" />
+                    <Form.Check
+                      inline
+                      type="radio"
+                      id="yes"
+                      name="delivered"
+                      onChange={(e) => {
+                        setFilterForIsDelivered(e.target.id);
+                      }}
+                    />
                   </Col>
                   <Col md={3}>
-                    <Form.Check type="radio" id="Omniva" />
+                    <Form.Check
+                      inline
+                      type="radio"
+                      id="no"
+                      name="delivered"
+                      onChange={(e) => {
+                        setFilterForIsDelivered(e.target.id);
+                      }}
+                    />
                   </Col>
                 </Row>
               </ListGroup.Item>

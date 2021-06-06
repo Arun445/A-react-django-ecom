@@ -26,9 +26,89 @@ import {
   USER_EDIT_REQUEST,
   USER_EDIT_SUCCESS,
   USER_EDIT_FAIL,
+  USER_GOOGLE_AUTH_REQUEST,
+  USER_GOOGLE_AUTH_SUCCESS,
+  USER_GOOGLE_AUTH_FAIL,
 } from "../constants/userConstants";
 import { ORDER_GET_RESET } from "../constants/orderConstants";
 import axios from "axios";
+
+export const load_user = () => async (dispatch) => {
+  if (localStorage.getItem("access")) {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("access")}`,
+        Accept: "application/json",
+      },
+    };
+
+    try {
+      const res = await axios.get(`/auth/users/me/`, config);
+      console.log(res.data);
+
+      dispatch({
+        type: USER_LOGIN_SUCCESS,
+        payload: res.data,
+      });
+      localStorage.setItem("users", JSON.stringify(res.data));
+    } catch (err) {
+      dispatch({
+        type: USER_LOGIN_FAIL,
+      });
+    }
+  } else {
+    dispatch({
+      type: USER_LOGIN_FAIL,
+    });
+  }
+};
+
+export const googleAuthenticate =
+  (state, code) => async (dispatch, getState) => {
+    dispatch({ type: USER_GOOGLE_AUTH_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+    if (state && code && !userInfo) {
+      const config = {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      };
+      const details = {
+        state: state,
+        code: code,
+      };
+      const formBody = Object.keys(details)
+        .map(
+          (key) =>
+            encodeURIComponent(key) + "=" + encodeURIComponent(details[key])
+        )
+        .join("&");
+
+      try {
+        const { data } = await axios.post(
+          `/auth/o/google-oauth2/?${formBody}`,
+          config
+        );
+
+        console.log(data);
+        dispatch({ type: USER_GOOGLE_AUTH_SUCCESS, payload: data });
+
+        dispatch(load_user());
+      } catch (error) {
+        dispatch({
+          type: USER_GOOGLE_AUTH_FAIL,
+          payload:
+            error.response && error.response.data.detail
+              ? error.response.data.detail
+              : error.message,
+        });
+      }
+    }
+  };
 
 export const login = (email, password) => async (dispatch) => {
   try {
@@ -67,6 +147,7 @@ export const logout = () => async (dispatch) => {
   dispatch({ type: USER_LIST_RESET });
 
   localStorage.setItem("users", []);
+  localStorage.setItem("access", []);
 };
 
 export const register = (name, email, password) => async (dispatch) => {

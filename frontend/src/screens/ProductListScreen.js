@@ -41,6 +41,9 @@ function ProductListScreen({ history }) {
   const [deleteSelected, setDeleteSelected] = useState([]);
   const [productForDelete, setProductForDelete] = useState(-1);
 
+  const [filterForIds, setFilterForIds] = useState();
+  const [filterForPrice, setFilterForPrice] = useState();
+
   let keyword = history.location.search;
   let location = history.location.pathname;
 
@@ -138,10 +141,24 @@ function ProductListScreen({ history }) {
                 <Row>
                   <Col md={6}>ID:</Col>
                   <Col md={3}>
-                    <Form.Check type="radio" id="Omniva" />
+                    <Form.Check
+                      type="radio"
+                      name="ids"
+                      id="idsUp"
+                      onChange={(e) => {
+                        setFilterForIds(e.target.id);
+                      }}
+                    />
                   </Col>
                   <Col md={3}>
-                    <Form.Check type="radio" id="Omniva" />
+                    <Form.Check
+                      type="radio"
+                      name="ids"
+                      id="idsDown"
+                      onChange={(e) => {
+                        setFilterForIds(e.target.id);
+                      }}
+                    />
                   </Col>
                 </Row>
               </ListGroup.Item>
@@ -149,10 +166,26 @@ function ProductListScreen({ history }) {
                 <Row>
                   <Col md={6}>Price:</Col>
                   <Col md={3}>
-                    <Form.Check type="radio" id="Omniva" />
+                    <Form.Check
+                      inline
+                      type="radio"
+                      id="priceUp"
+                      name="price"
+                      onChange={(e) => {
+                        setFilterForPrice(e.target.id);
+                      }}
+                    />
                   </Col>
                   <Col md={3}>
-                    <Form.Check type="radio" id="Omniva" />
+                    <Form.Check
+                      inline
+                      type="radio"
+                      id="priceDown"
+                      name="price"
+                      onChange={(e) => {
+                        setFilterForPrice(e.target.id);
+                      }}
+                    />
                   </Col>
                 </Row>
               </ListGroup.Item>
