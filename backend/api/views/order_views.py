@@ -1,6 +1,7 @@
 
 from django.shortcuts import render
 from django.contrib.auth.models import User
+from django.core.paginator import EmptyPage, Paginator, PageNotAnInteger
 
 from ..models import Product, Order, ShippingAddress, OrderItems
 from ..serializers import ProductSerializer,OrderSerializer,ReviewSerializer
@@ -57,15 +58,34 @@ def getOrders(request):
         id_query = request.query_params.get('id')
         isPaid_query = request.query_params.get('isPaid')
         isDelivered_query = request.query_params.get('isDelivered')
+        
 
         if id_query:
-            orders.filter(_id=id_query)
+            orders = orders.filter(_id=id_query)
             
-        if isPaid_query == 'True':
-            orders.filter(_id=id_query)
+        if isPaid_query=='True' or isPaid_query=='False':
+            orders = orders.filter(isPaid=isPaid_query)
+        
+        if isDelivered_query == 'True' or isDelivered_query == 'False':
+            orders = orders.filter(isDelivered=isDelivered_query)
+        
+        paginator = Paginator(orders,20)
+        page = request.query_params.get('page')
+        
+        try:
+            orders=paginator.page(page)
+        except PageNotAnInteger:
+            orders=paginator.page(1)
+        except EmptyPage:
+            orders=paginator.page(paginator.num_pages)
 
-        serialier = OrderSerializer(orders,many=True)
-        return Response(serialier.data)
+        if page== None:
+            page=1
+        serializer = OrderSerializer(orders,many=True)
+
+        page=int(page)
+        
+        return Response({'orders':serializer.data, 'page':page, 'pages':paginator.num_pages})
 
     
 @api_view(['POST'])

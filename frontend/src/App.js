@@ -19,6 +19,7 @@ import ProductListScreen from "./screens/ProductListScreen";
 import ProductEditScreen from "./screens/ProductEditScreen";
 import OrderListScreen from "./screens/OrderListScreen";
 import ScrollToTop from "./components/ScrollToTop";
+import ItemScreen from "./screens/ItemScreen";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
           <Route path="/order/:id" component={OrderScreen} />
           <Route path="/product/:id" component={ProductScreen} />
           <Route path="/cart/:id?" component={CartScreen} />
+          <Route path="/items" component={ItemScreen} />
 
           <Route path="/orderlist" component={OrderListScreen} />
           <Route path="/create" component={ProductCreateScreen} />

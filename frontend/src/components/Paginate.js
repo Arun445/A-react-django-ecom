@@ -6,11 +6,22 @@ import {
   PRODUCT_DELETE_SELECTED_RESET,
   PRODUCT_DELETE_SELECTED_PAGINATE,
 } from "../constants/productConstants";
-function Paginate({ pages, page, keyword = "", isAdmin = false, location }) {
+function Paginate({
+  pages,
+  page,
+  keyword = "",
+  isAdmin = false,
+  location,
+  filter = "",
+}) {
+  //let filteringas = "&id=&price=&category=";
+
   if (keyword) {
+    filter = keyword.split("page=")[1].split(page)[1];
+
     keyword = keyword.split("?keyword=")[1].split("&")[0];
   }
-  console.log(location);
+
   const dispatch = useDispatch();
 
   const productDeleteSelected = useSelector(
@@ -22,7 +33,7 @@ function Paginate({ pages, page, keyword = "", isAdmin = false, location }) {
     success: deleteListSuccess,
     selected,
   } = productDeleteSelected;
-
+  //&id=${keyword[2].split("=")[1]}&price=${keyword[3].split("=")[1]}&category=${keyword[4].split("=")[1]}
   return (
     pages > 1 && (
       <Pagination>
@@ -32,12 +43,21 @@ function Paginate({ pages, page, keyword = "", isAdmin = false, location }) {
             to={
               location === "/"
                 ? `/?keyword=${keyword}&page=${x + 1}`
-                : `/products?keyword=${keyword}&page=${x + 1}`
+                : location === "/items"
+                ? `/items?keyword=${keyword}&page=${x + 1}${filter}`
+                : location === "/products"
+                ? `/products?keyword=${keyword}&page=${x + 1}${filter}`
+                : location === "/orderlist"
+                ? `/orderlist?keyword=${keyword}&page=${x + 1}${filter}`
+                : location === "/users" &&
+                  `/users?keyword=${keyword}&page=${x + 1}${filter}`
             }
           >
             <Pagination.Item
-              onClick={() =>
-                dispatch({ type: PRODUCT_DELETE_SELECTED_PAGINATE })
+              onClick={
+                location === "/products"
+                  ? () => dispatch({ type: PRODUCT_DELETE_SELECTED_PAGINATE })
+                  : () => {}
               }
               active={x + 1 === page}
             >

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+
 import { useDispatch, useSelector } from "react-redux";
 import {
   Row,
@@ -41,8 +41,9 @@ function ProductListScreen({ history }) {
   const [deleteSelected, setDeleteSelected] = useState([]);
   const [productForDelete, setProductForDelete] = useState(-1);
 
-  const [filterForIds, setFilterForIds] = useState();
-  const [filterForPrice, setFilterForPrice] = useState();
+  const [filterForIds, setFilterForIds] = useState("");
+  const [filterForPrice, setFilterForPrice] = useState("");
+  const [filterForCategory, setFilterForCategory] = useState("");
 
   let keyword = history.location.search;
   let location = history.location.pathname;
@@ -82,11 +83,13 @@ function ProductListScreen({ history }) {
     if (!userInfo && !userInfo.isAdmin) {
       history.push("/");
     } else if (userInfo && userInfo.isAdmin && !successListGet) {
+      console.log("nuj");
       dispatch(listProducts(keyword));
     } else if (paginated) {
       dispatch(listProducts(keyword));
       dispatch({ type: PRODUCT_DELETE_SELECTED_RESET });
     } else if (!deleteListSuccess && !successDelete) {
+      console.log("nu");
       if (productForDelete !== -1) {
         selectedForDelete(productForDelete);
       }
@@ -114,6 +117,12 @@ function ProductListScreen({ history }) {
     setProductForDelete(-1);
   };
 
+  const filterHandler = () => {
+    history.push(
+      `/products?keyword=&page=1&id=${filterForIds}&price=${filterForPrice}&category=${filterForCategory}`
+    );
+    dispatch(listProducts(keyword));
+  };
   return (
     <Container>
       <Form>
@@ -139,37 +148,30 @@ function ProductListScreen({ history }) {
 
               <ListGroup.Item>
                 <Row>
-                  <Col md={6}>ID:</Col>
-                  <Col md={3}>
-                    <Form.Check
-                      type="radio"
-                      name="ids"
-                      id="idsUp"
+                  <Col>ID:</Col>
+                  <Col>
+                    <Form.Control
+                      type="number"
+                      placeholder="Id"
+                      size="sm"
+                      value={filterForIds}
                       onChange={(e) => {
-                        setFilterForIds(e.target.id);
-                      }}
-                    />
-                  </Col>
-                  <Col md={3}>
-                    <Form.Check
-                      type="radio"
-                      name="ids"
-                      id="idsDown"
-                      onChange={(e) => {
-                        setFilterForIds(e.target.id);
+                        setFilterForIds(e.target.value);
                       }}
                     />
                   </Col>
                 </Row>
               </ListGroup.Item>
+
               <ListGroup.Item>
                 <Row>
                   <Col md={6}>Price:</Col>
                   <Col md={3}>
                     <Form.Check
                       inline
+                      label={<i className="fas fa-long-arrow-alt-up"></i>}
                       type="radio"
-                      id="priceUp"
+                      id="up"
                       name="price"
                       onChange={(e) => {
                         setFilterForPrice(e.target.id);
@@ -179,8 +181,9 @@ function ProductListScreen({ history }) {
                   <Col md={3}>
                     <Form.Check
                       inline
+                      label={<i className="fas fa-long-arrow-alt-down"></i>}
                       type="radio"
-                      id="priceDown"
+                      id="down"
                       name="price"
                       onChange={(e) => {
                         setFilterForPrice(e.target.id);
@@ -193,14 +196,25 @@ function ProductListScreen({ history }) {
                 <Row>
                   <Col>Category:</Col>
                   <Col>
-                    <Form.Control as="select" size="sm">
-                      <option>a</option>
+                    <Form.Control
+                      as="select"
+                      size="sm"
+                      value={filterForCategory}
+                      onChange={(e) => setFilterForCategory(e.target.value)}
+                    >
+                      <option></option>
+                      <option>Electronics</option>
+                      <option>Shoes</option>
+                      <option>Sports wear</option>
+                      <option>Furniture</option>
                     </Form.Control>
                   </Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
-                <Button variant="primary btn-block">Filter</Button>
+                <Button variant="primary btn-block" onClick={filterHandler}>
+                  Filter
+                </Button>
               </ListGroup.Item>
             </ListGroup>
           </Col>
@@ -267,6 +281,7 @@ function ProductListScreen({ history }) {
                   isAdmin={true}
                   keyword={keyword}
                   location={location}
+                  filter={"&id=&price=&category="}
                 />
               </div>
             )}

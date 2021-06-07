@@ -30,6 +30,7 @@ import {
   PRODUCT_TOP_REQUEST,
   PRODUCT_TOP_SUCCESS,
   PRODUCT_TOP_FAIL,
+  PRODUCT_LIST_RESET_SUCCESS,
 } from "../constants/productConstants";
 
 export const productListReducer = (
@@ -51,6 +52,8 @@ export const productListReducer = (
 
     case PRODUCT_LIST_FAIL:
       return { loading: false, error: action.payload };
+    case PRODUCT_LIST_RESET_SUCCESS:
+      return { ...state, success: false };
 
     default:
       return state;

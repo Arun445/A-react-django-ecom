@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
+from django.core.paginator import Paginator,PageNotAnInteger, EmptyPage
 
 from ..serializers import UserSerializer, UserSerializerWithToken
 
@@ -31,8 +32,40 @@ class MyTokenObtainPairView(TokenObtainPairView):
 @permission_classes([IsAdminUser])
 def getUsers(request):
     users = User.objects.all()
+ 
+    id_query = request.query_params.get('id')
+    name_query = request.query_params.get('name')
+    isAdmin_query = request.query_params.get('admin')
+    page = request.query_params.get('page')
+    
+
+    if id_query:
+        users = users.filter(id=id_query)
+
+    if name_query:
+        users = users.filter(first_name__icontains=name_query)
+
+    if isAdmin_query == 'True' or isAdmin_query == 'False':
+        users = users.filter(is_staff=isAdmin_query)
+
+    paginator=Paginator(users,2)
+    
+    try:
+        users=paginator.page(page)
+    except PageNotAnInteger :
+        users=paginator.page(1)
+    except EmptyPage:
+        users=paginator.page(paginator.num_pages)
+
+    if page == None:
+        page=1
+    
+    page=int(page)
+
     serializer = UserSerializer(users, many=True)
-    return Response(serializer.data)
+
+
+    return Response({'users':serializer.data, 'page':page, 'pages':paginator.num_pages})
 
 
 @api_view(['GET'])

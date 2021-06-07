@@ -3,6 +3,7 @@ import {
   PRODUCT_LIST_REQUEST,
   PRODUCT_LIST_SUCCESS,
   PRODUCT_LIST_FAIL,
+  PRODUCT_LIST_RESET_SUCCESS,
   PRODUCT_DETAIL_REQUEST,
   PRODUCT_DETAIL_SUCCESS,
   PRODUCT_DETAIL_FAIL,
@@ -39,8 +40,12 @@ export const listProducts =
       const { data } = await axios.get(`api/products${keyword}`);
 
       dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
-      //dispatch({ type: PRODUCT_DELETE_SELECTED_RESET, payload: data });
+
       dispatch({ type: PRODUCT_DELETE_RESET, payload: data });
+
+      if (!keyword.includes("id") && keyword) {
+        dispatch({ type: PRODUCT_LIST_RESET_SUCCESS });
+      }
     } catch (error) {
       dispatch({
         type: PRODUCT_LIST_FAIL,

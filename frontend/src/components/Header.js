@@ -34,12 +34,34 @@ function Header() {
               <h2>EcomWebsite</h2>
             </Navbar.Brand>
           </LinkContainer>
+          <NavDropdown title="Products" id="basic-nav-dropdown">
+            <LinkContainer to={"/items?keyword=&page=1&category=electronics"}>
+              <NavDropdown.Item className="mt-1 mb-1 pt-3 pb-3">
+                Electronics
+              </NavDropdown.Item>
+            </LinkContainer>
+            <LinkContainer to={"/items?keyword=&page=1&category=shoes"}>
+              <NavDropdown.Item className="mt-1 mb-1 pt-3 pb-3">
+                Shoes
+              </NavDropdown.Item>
+            </LinkContainer>
+            <LinkContainer to={"/items?keyword=&page=1&category=sportswear"}>
+              <NavDropdown.Item className="mt-1 mb-1 pt-3 pb-3">
+                Sports Wear
+              </NavDropdown.Item>
+            </LinkContainer>
+            <LinkContainer to={"/items?keyword=&page=1&category=furniture"}>
+              <NavDropdown.Item className="mt-1 mb-1 pt-3 pb-3">
+                Furniture
+              </NavDropdown.Item>
+            </LinkContainer>
+          </NavDropdown>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ml-auto ">
-              <SearchBox className="" />
+              <SearchBox className="mt-2" />
 
-              <h6>
+              <h6 className="mt-2">
                 <LinkContainer to="/cart">
                   <Nav.Link>
                     <i className="fas fa-shopping-cart"></i>Cart
@@ -51,7 +73,7 @@ function Header() {
                   as="h6"
                   title="Admin"
                   id="nav-dropdown"
-                  className="mr-1"
+                  className="mr-1 mt-2"
                 >
                   <h6>
                     <LinkContainer to="/products">
@@ -85,6 +107,7 @@ function Header() {
                       : userInfo.name
                   }
                   id="nav-dropdown"
+                  className="mt-2"
                 >
                   <h6>
                     <LinkContainer to="/profile">

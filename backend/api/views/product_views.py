@@ -23,6 +23,7 @@ def getProducts(request):
     price_query = request.query_params.get('price')
     category_query= request.query_params.get('category')
     
+    
     if query ==None:
         query=''
     else:
@@ -43,7 +44,7 @@ def getProducts(request):
 
 
     page = request.query_params.get('page')
-    paginator = Paginator(products,8)
+    paginator = Paginator(products,2)
 
     try:
         products = paginator.page(page)

@@ -11,18 +11,22 @@ import {
   ListGroup,
 } from "react-bootstrap";
 import Message from "../components/Message";
-
+import Paginate from "../components/Paginate";
 import Loader from "../components/Loader";
 
 import { listUsers, deleteUser } from "../actions/userActions";
 import { LinkContainer } from "react-router-bootstrap";
+import queryString from "query-string";
 
 function UserListScreen({ history }) {
   const dispatch = useDispatch();
-  const [filterForAdmin, setFilterForAdmin] = useState();
+
+  const [filterForIds, setFilterForIds] = useState("");
+  const [filterForAdmin, setFilterForAdmin] = useState("");
+  const [filterForName, setFilterForName] = useState("");
 
   const usersList = useSelector((state) => state.usersList);
-  const { users, loading, error } = usersList;
+  const { users, loading, error, page, pages } = usersList;
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -30,13 +34,38 @@ function UserListScreen({ history }) {
   const userDelete = useSelector((state) => state.userDelete);
   const { success: successDelete } = userDelete;
 
+  let keyword = history.location.search;
+  let location = history.location.pathname;
+  let params = queryString.parse(history.location.search);
+
   useEffect(() => {
+    if (filterForIds || filterForAdmin || filterForName) {
+      history.push(
+        `/users?keyword=&page=${
+          params.page ? params.page : 1
+        }&id=${filterForIds}&name=${filterForName}&admin=${filterForAdmin}`
+      );
+    } else if (!filterForIds && !filterForName && !filterForAdmin) {
+      if (params.isDelivered || params.isPaid || params.id) {
+        history.push("/users");
+      }
+    }
+    keyword = history.location.search;
     if (userInfo && userInfo.isAdmin) {
-      dispatch(listUsers());
+      dispatch(listUsers(keyword));
     } else {
       history.push("/");
     }
-  }, [dispatch, history, userInfo, successDelete]);
+  }, [
+    dispatch,
+    history,
+    userInfo,
+    successDelete,
+    keyword,
+    filterForIds,
+    filterForAdmin,
+    filterForName,
+  ]);
 
   const deleteHandler = (id) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
@@ -56,7 +85,15 @@ function UserListScreen({ history }) {
               <Row>
                 <Col>ID:</Col>
                 <Col>
-                  <Form.Control type="number" placeholder="Id" size="sm" />
+                  <Form.Control
+                    type="number"
+                    placeholder="Id"
+                    size="sm"
+                    value={filterForIds}
+                    onChange={(e) => {
+                      setFilterForIds(e.target.value);
+                    }}
+                  />
                 </Col>
               </Row>
             </ListGroup.Item>
@@ -65,18 +102,34 @@ function UserListScreen({ history }) {
               <Row>
                 <Col>Name:</Col>
                 <Col>
-                  <Form.Control type="text" placeholder="name" size="sm" />
+                  <Form.Control
+                    type="text"
+                    placeholder="name"
+                    size="sm"
+                    value={filterForName}
+                    onChange={(e) => {
+                      setFilterForName(e.target.value);
+                    }}
+                  />
                 </Col>
               </Row>
             </ListGroup.Item>
+
             <ListGroup.Item>
               <Row>
                 <Col md={6}>Admin:</Col>
                 <Col md={3}>
                   <Form.Check
+                    label={
+                      <i
+                        className="fas fa-check"
+                        style={{ color: "green" }}
+                      ></i>
+                    }
                     type="radio"
-                    name="ids"
-                    id="Yes"
+                    name="paid"
+                    id="True"
+                    disabled={loading}
                     onChange={(e) => {
                       setFilterForAdmin(e.target.id);
                     }}
@@ -84,18 +137,19 @@ function UserListScreen({ history }) {
                 </Col>
                 <Col md={3}>
                   <Form.Check
+                    label={
+                      <i className="fas fa-times" style={{ color: "red" }}></i>
+                    }
                     type="radio"
-                    name="ids"
-                    id="No"
+                    name="paid"
+                    id="False"
+                    disabled={loading}
                     onChange={(e) => {
                       setFilterForAdmin(e.target.id);
                     }}
                   />
                 </Col>
               </Row>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <Button variant="primary btn-block">Filter</Button>
             </ListGroup.Item>
           </ListGroup>
         </Col>
@@ -155,6 +209,14 @@ function UserListScreen({ history }) {
               </tbody>
             </Table>
           )}
+          <Paginate
+            page={page}
+            pages={pages}
+            isAdmin={true}
+            keyword={keyword}
+            location={location}
+            filter={"&id=&name=&admin="}
+          />
         </Col>
       </Row>
     </Container>

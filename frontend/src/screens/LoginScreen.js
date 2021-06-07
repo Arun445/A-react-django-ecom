@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, Image } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import FormContainer from "../components/FormContainer";
 import { useDispatch, useSelector } from "react-redux";
@@ -74,14 +74,6 @@ function LoginScreen({ history, location }) {
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
-
-        <Button
-          variant="primary"
-          type="submit"
-          className=" btn-center rounded mt-2"
-        >
-          Submit
-        </Button>
         <Form.Group className="text-center mt-4">
           <h6>
             <Link to="/">Forgot password?</Link> ·{" "}
@@ -90,8 +82,25 @@ function LoginScreen({ history, location }) {
             </Link>
           </h6>
         </Form.Group>
+        <Button
+          variant="primary"
+          type="submit"
+          className=" btn-center rounded mt-2"
+        >
+          Submit
+        </Button>
       </Form>
-      <Button onClick={continueWithGoogle}>a</Button>
+      <h6 className="text-center mt-3">or</h6>
+      <Button
+        variant="light"
+        onClick={continueWithGoogle}
+        className="google-btn-center"
+      >
+        <Image
+          className="google-btn "
+          src={process.env.PUBLIC_URL + "/images/btn_google.png"}
+        ></Image>
+      </Button>
     </FormContainer>
   );
 }

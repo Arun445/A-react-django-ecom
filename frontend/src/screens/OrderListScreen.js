@@ -11,32 +11,57 @@ import {
   ListGroup,
 } from "react-bootstrap";
 import Message from "../components/Message";
-
+import Paginate from "../components/Paginate";
 import Loader from "../components/Loader";
 
 import { getOrderList } from "../actions/orderActions";
 import { LinkContainer } from "react-router-bootstrap";
+import queryString from "query-string";
 
 function OrderListScreen({ history }) {
   const dispatch = useDispatch("");
-  const [filterForIsPaid, setFilterForIsPaid] = useState();
-  const [filterForIsDelivered, setFilterForIsDelivered] = useState();
+
+  const [filterForIds, setFilterForIds] = useState("");
+  const [filterForIsPaid, setFilterForIsPaid] = useState("");
+  const [filterForIsDelivered, setFilterForIsDelivered] = useState("");
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
   const ordersList = useSelector((state) => state.ordersList);
-  const { orders, error, loading } = ordersList;
+  const { orders, error, loading, page, pages } = ordersList;
 
+  let keyword = history.location.search;
+  let location = history.location.pathname;
+  let params = queryString.parse(history.location.search);
   useEffect(() => {
+    if (filterForIds || filterForIsPaid || filterForIsDelivered) {
+      history.push(
+        `/orderlist?keyword=&page=${
+          params.page ? params.page : 1
+        }&id=${filterForIds}&isPaid=${filterForIsPaid}&isDelivered=${filterForIsDelivered}`
+      );
+    } else if (!filterForIds && !filterForIsPaid && !filterForIsDelivered) {
+      if (params.isDelivered || params.isPaid || params.id) {
+        history.push("/orderlist");
+      }
+    }
+    keyword = history.location.search;
     if (!userInfo && !userInfo.isAdmin) {
       history.push("/");
     } else if (userInfo && userInfo.isAdmin) {
-      dispatch(getOrderList());
+      dispatch(getOrderList(keyword));
+      console.log(keyword);
     }
-  }, [dispatch, history, userInfo]);
-
-  const deleteHandler = (id) => {};
+  }, [
+    dispatch,
+    history,
+    userInfo,
+    keyword,
+    filterForIds,
+    filterForIsPaid,
+    filterForIsDelivered,
+  ]);
 
   return (
     <Container>
@@ -52,7 +77,15 @@ function OrderListScreen({ history }) {
                 <Row>
                   <Col>ID:</Col>
                   <Col>
-                    <Form.Control type="number" placeholder="Id" size="sm" />
+                    <Form.Control
+                      type="number"
+                      placeholder="Id"
+                      size="sm"
+                      value={filterForIds}
+                      onChange={(e) => {
+                        setFilterForIds(e.target.value);
+                      }}
+                    />
                   </Col>
                 </Row>
               </ListGroup.Item>
@@ -62,9 +95,15 @@ function OrderListScreen({ history }) {
                   <Col md={6}>Paid:</Col>
                   <Col md={3}>
                     <Form.Check
+                      label={
+                        <i
+                          className="fas fa-check"
+                          style={{ color: "green" }}
+                        ></i>
+                      }
                       type="radio"
                       name="paid"
-                      id="yes"
+                      id="True"
                       onChange={(e) => {
                         setFilterForIsPaid(e.target.id);
                       }}
@@ -72,9 +111,15 @@ function OrderListScreen({ history }) {
                   </Col>
                   <Col md={3}>
                     <Form.Check
+                      label={
+                        <i
+                          className="fas fa-times"
+                          style={{ color: "red" }}
+                        ></i>
+                      }
                       type="radio"
                       name="paid"
-                      id="no"
+                      id="False"
                       onChange={(e) => {
                         setFilterForIsPaid(e.target.id);
                       }}
@@ -87,9 +132,15 @@ function OrderListScreen({ history }) {
                   <Col md={6}>Delivered:</Col>
                   <Col md={3}>
                     <Form.Check
+                      label={
+                        <i
+                          className="fas fa-check"
+                          style={{ color: "green" }}
+                        ></i>
+                      }
                       inline
                       type="radio"
-                      id="yes"
+                      id="True"
                       name="delivered"
                       onChange={(e) => {
                         setFilterForIsDelivered(e.target.id);
@@ -98,9 +149,15 @@ function OrderListScreen({ history }) {
                   </Col>
                   <Col md={3}>
                     <Form.Check
+                      label={
+                        <i
+                          className="fas fa-times"
+                          style={{ color: "red" }}
+                        ></i>
+                      }
                       inline
                       type="radio"
-                      id="no"
+                      id="False"
                       name="delivered"
                       onChange={(e) => {
                         setFilterForIsDelivered(e.target.id);
@@ -108,9 +165,6 @@ function OrderListScreen({ history }) {
                     />
                   </Col>
                 </Row>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Button variant="primary btn-block">Filter</Button>
               </ListGroup.Item>
             </ListGroup>
           </Col>
@@ -170,6 +224,14 @@ function OrderListScreen({ history }) {
                 </tbody>
               </Table>
             )}
+            <Paginate
+              page={page}
+              pages={pages}
+              isAdmin={true}
+              keyword={keyword}
+              location={location}
+              filter={"&id=&isPaid=&isDelivered="}
+            />
           </Col>
         </Row>
       </Form>
