@@ -19,6 +19,10 @@ h3 {
   margin-left: 20%;
   margin-right: 20%;
 }
+.product-image {
+  height: 200px;
+  width: 200px;
+}
 
 .google-btn-center {
   width: auto;

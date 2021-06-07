@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Row, Col } from "react-bootstrap";
-
+import { Row, Col, Card } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import Product from "../components/Product";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
@@ -36,12 +36,6 @@ function HomeScreen({ history }) {
     dispatch(listProducts(keyword));
   }, [dispatch, keyword]);
 
-  /*<Paginate
-            page={page}
-            pages={pages}
-            keyword={keyword}
-            location={location}
-          /> */
   return (
     <div>
       <h1>Lastest Products</h1>
@@ -55,11 +49,46 @@ function HomeScreen({ history }) {
       ) : (
         <div>
           <Row>
-            {products.map((product) => (
-              <Col sm={12} md={6} lg={4} xl={3} key={product._id}>
-                <Product product={product} />
-              </Col>
-            ))}
+            <Col sm={12} md={6} lg={4} xl={3}>
+              <Card className="my-3  rounded">
+                <Link to={`/items`}>
+                  <Card.Img
+                    src={process.env.PUBLIC_URL + "/images/electronics.jpg"}
+                    className="product-image"
+                  />
+                </Link>
+                <Card.Body>
+                  <Link to={`/product/`}>
+                    <Card.Title as="div">
+                      <strong>Electronics</strong>
+                    </Card.Title>
+                  </Link>
+                  <Card.Text as="div">
+                    <div className="my-3"></div>
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col sm={12} md={6} lg={4} xl={3}>
+              <Card className="my-3  rounded">
+                <Link to={`/items`}>
+                  <Card.Img
+                    src={process.env.PUBLIC_URL + "/images/bikes.jpg"}
+                    className="product-image"
+                  />
+                </Link>
+                <Card.Body>
+                  <Link to={`/product/`}>
+                    <Card.Title as="div">
+                      <strong>Bikes</strong>
+                    </Card.Title>
+                  </Link>
+                  <Card.Text as="div">
+                    <div className="my-3"></div>
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
           </Row>
         </div>
       )}

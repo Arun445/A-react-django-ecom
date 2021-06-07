@@ -204,8 +204,7 @@ function ProductListScreen({ history }) {
                     >
                       <option></option>
                       <option>Electronics</option>
-                      <option>Shoes</option>
-                      <option>Sports wear</option>
+                      <option>Bikes</option>
                       <option>Furniture</option>
                     </Form.Control>
                   </Col>

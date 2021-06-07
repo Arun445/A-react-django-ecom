@@ -40,16 +40,12 @@ function Header() {
                 Electronics
               </NavDropdown.Item>
             </LinkContainer>
-            <LinkContainer to={"/items?keyword=&page=1&category=shoes"}>
+            <LinkContainer to={"/items?keyword=&page=1&category=bikes"}>
               <NavDropdown.Item className="mt-1 mb-1 pt-3 pb-3">
-                Shoes
+                Bikes
               </NavDropdown.Item>
             </LinkContainer>
-            <LinkContainer to={"/items?keyword=&page=1&category=sportswear"}>
-              <NavDropdown.Item className="mt-1 mb-1 pt-3 pb-3">
-                Sports Wear
-              </NavDropdown.Item>
-            </LinkContainer>
+
             <LinkContainer to={"/items?keyword=&page=1&category=furniture"}>
               <NavDropdown.Item className="mt-1 mb-1 pt-3 pb-3">
                 Furniture
@@ -128,7 +124,7 @@ function Header() {
                 </NavDropdown>
               ) : (
                 <h6>
-                  <LinkContainer to="/login">
+                  <LinkContainer to="/login" className="mt-2">
                     <Nav.Link>
                       <i className="fas fa-user"></i>Login
                     </Nav.Link>

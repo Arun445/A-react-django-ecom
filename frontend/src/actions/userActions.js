@@ -29,6 +29,12 @@ import {
   USER_GOOGLE_AUTH_REQUEST,
   USER_GOOGLE_AUTH_SUCCESS,
   USER_GOOGLE_AUTH_FAIL,
+  USER_PASSWORD_RESET_REQUEST,
+  USER_PASSWORD_RESET_SUCCESS,
+  USER_PASSWORD_RESET_FAIL,
+  USER_PASSWORD_RESET_CONFIRM_REQUEST,
+  USER_PASSWORD_RESET_CONFIRM_SUCCESS,
+  USER_PASSWORD_RESET_CONFIRM_FAIL,
 } from "../constants/userConstants";
 import { ORDER_GET_RESET } from "../constants/orderConstants";
 import axios from "axios";
@@ -367,3 +373,78 @@ export const deleteUser = (id) => async (dispatch, getState) => {
     });
   }
 };
+export const passwordReset = (email) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: USER_PASSWORD_RESET_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const body = JSON.stringify({ email });
+
+    const { data } = await axios.post(
+      `/auth/users/reset_password/`,
+      body,
+      config
+    );
+
+    dispatch({ type: USER_PASSWORD_RESET_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: USER_PASSWORD_RESET_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
+
+export const passwordResetConfirm =
+  (uid, token, new_password, re_new_password) => async (dispatch, getState) => {
+    try {
+      dispatch({ type: USER_PASSWORD_RESET_CONFIRM_REQUEST });
+
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+
+      const body = JSON.stringify({
+        uid,
+        token,
+        new_password,
+        re_new_password,
+      });
+
+      const { data } = await axios.post(
+        `/auth/users/reset_password_confirm/`,
+        body,
+        config
+      );
+
+      dispatch({ type: USER_PASSWORD_RESET_CONFIRM_SUCCESS, payload: data });
+    } catch (error) {
+      dispatch({
+        type: USER_PASSWORD_RESET_CONFIRM_FAIL,
+        payload:
+          error.response && error.response.data.detail
+            ? error.response.data.detail
+            : error.message,
+      });
+    }
+  };

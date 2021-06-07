@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import FormContainer from "../components/FormContainer";
 import { useDispatch, useSelector } from "react-redux";
 import { createProduct } from "../actions/productActions";
+import { PRODUCT_CREATE_RESET } from "../constants/productConstants";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 import axios from "axios";
@@ -16,16 +17,26 @@ function ProductCreateScreen({ history, location }) {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
   const [countInStock, setCountInStock] = useState(0);
+  const [messageSuccess, setMessageSuccess] = useState("");
 
   const dispatch = useDispatch();
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
-  useEffect(() => {}, [dispatch, history, userInfo]);
+  const productCreate = useSelector((state) => state.productCreate);
+  const { success, product, loading } = productCreate;
+
+  useEffect(() => {
+    if (success) {
+      setMessageSuccess("You successfully created a new product");
+      dispatch({ type: PRODUCT_CREATE_RESET });
+    }
+  }, [dispatch, history, userInfo, success]);
 
   const submitHandler = (e) => {
     e.preventDefault();
+    window.scrollTo(0, 0);
 
     dispatch(
       createProduct({
@@ -47,6 +58,14 @@ function ProductCreateScreen({ history, location }) {
       </Link>
       <FormContainer>
         <h1 className="text-center">Product</h1>
+
+        {loading ? (
+          <Loader />
+        ) : (
+          messageSuccess && (
+            <Message variant="success">{messageSuccess}</Message>
+          )
+        )}
 
         <Form onSubmit={submitHandler}>
           <Form.Group controlId="name">

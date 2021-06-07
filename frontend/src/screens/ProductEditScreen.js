@@ -41,7 +41,7 @@ function ProductEditScreen({ history, match }) {
 
   useEffect(() => {
     if (success) {
-      setMessageSuccess("You successfully updated this profile");
+      setMessageSuccess("You successfully updated this product");
       dispatch(listProductDetail(productId));
       dispatch({ type: PRODUCT_UPDATE_RESET });
     } else {
@@ -60,6 +60,7 @@ function ProductEditScreen({ history, match }) {
 
   const submitHandler = (e) => {
     e.preventDefault();
+    window.scrollTo(0, 0);
     dispatch(
       updateProduct({
         id: productId,

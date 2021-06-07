@@ -32,6 +32,7 @@ function UserEditScreen({ match }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log(messageSuccess);
     if (successEdit) {
       setMessageSuccess("You successfully updated this profile");
       dispatch(getUserProfile(profileId));
@@ -45,6 +46,7 @@ function UserEditScreen({ match }) {
         setIsAdmin(userInfo.isAdmin);
       }
     }
+    console.log(messageSuccess);
   }, [match, dispatch, userInfo, successEdit]);
 
   const submitHandler = (e) => {
