@@ -171,8 +171,8 @@ DJOSER = {
 }
 
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY ='GOOGLE-KEY'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'GOOGLE-SECRET-KEY'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY ='569088253825-4nchg7bf4cs4v17qpohirb1io40en3dl.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'D_WuF-3QUiQyaF7KM5W-BzlI'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile', 'openid']
 #SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['name, email, first_name, last_name']
 
