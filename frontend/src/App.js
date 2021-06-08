@@ -20,6 +20,8 @@ import ProductEditScreen from "./screens/ProductEditScreen";
 import OrderListScreen from "./screens/OrderListScreen";
 import ScrollToTop from "./components/ScrollToTop";
 import ItemScreen from "./screens/ItemScreen";
+import PasswordResetScreen from "./screens/PasswordResetScreen";
+import PasswordResetConfirmScreen from "./screens/PasswordResetConfirmScreen";
 
 function App() {
   return (
@@ -39,6 +41,11 @@ function App() {
           <Route path="/product/:id" component={ProductScreen} />
           <Route path="/cart/:id?" component={CartScreen} />
           <Route path="/items" component={ItemScreen} />
+          <Route path="/password_reset" component={PasswordResetScreen} />
+          <Route
+            path="/password_reset_confirm/:uid/:token"
+            component={PasswordResetConfirmScreen}
+          />
 
           <Route path="/orderlist" component={OrderListScreen} />
           <Route path="/create" component={ProductCreateScreen} />

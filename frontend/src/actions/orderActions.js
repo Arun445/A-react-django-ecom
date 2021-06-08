@@ -112,33 +112,38 @@ export const payOrder = (id, paymentResult) => async (dispatch, getState) => {
   }
 };
 
-export const getOrders = () => async (dispatch, getState) => {
-  try {
-    dispatch({ type: ORDER_GET_REQUEST });
+export const getOrders =
+  (keyword = "") =>
+  async (dispatch, getState) => {
+    try {
+      dispatch({ type: ORDER_GET_REQUEST });
 
-    const {
-      userLogin: { userInfo },
-    } = getState();
+      const {
+        userLogin: { userInfo },
+      } = getState();
 
-    const config = {
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${userInfo.token}`,
-      },
-    };
-    const { data } = await axios.get(`/api/orders/myorders/`, config);
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const { data } = await axios.get(
+        `/api/orders/myorders/${keyword}`,
+        config
+      );
 
-    dispatch({ type: ORDER_GET_SUCCESS, payload: data });
-  } catch (error) {
-    dispatch({
-      type: ORDER_GET_FAIL,
-      payload:
-        error.response && error.response.data.detail
-          ? error.response.data.detail
-          : error.message,
-    });
-  }
-};
+      dispatch({ type: ORDER_GET_SUCCESS, payload: data });
+    } catch (error) {
+      dispatch({
+        type: ORDER_GET_FAIL,
+        payload:
+          error.response && error.response.data.detail
+            ? error.response.data.detail
+            : error.message,
+      });
+    }
+  };
 
 export const getOrderList =
   (keyword = "") =>

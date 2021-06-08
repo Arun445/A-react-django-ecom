@@ -73,7 +73,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'build')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -136,6 +136,15 @@ USE_L10N = True
 USE_TZ = False
 
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')
+
+
+
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
@@ -155,7 +164,8 @@ SIMPLE_JWT = {
 }
 
 DJOSER = {
-    
+    #'SET_PASSWORD_RETYPE': True,
+    'PASSWORD_RESET_CONFIRM_URL': 'password_reset_confirm/{uid}/{token}',
     'SOCIAL_AUTH_TOKEN_STRATEGY': 'djoser.social.token.jwt.TokenStrategy',
     'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': ['http://127.0.0.1:8000', 'http://localhost:3000'],
     'SERIALIZERS': {
@@ -171,13 +181,17 @@ DJOSER = {
 }
 
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY ='569088253825-4nchg7bf4cs4v17qpohirb1io40en3dl.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'D_WuF-3QUiQyaF7KM5W-BzlI'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY ='Google-auth'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'Google-auth-secret'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile', 'openid']
 #SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['name, email, first_name, last_name']
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR/'static']
+#STATICFILES_ROOT = [BASE_DIR/'static']
+
+#STATICFILES_DIRS = os.path.join(BASE_DIR,'build/static')
+#STATICFILES_ROOT = os.path.join(BASE_DIR,'static')
 
 
 MEDIA_URL='/images/'

@@ -48,7 +48,7 @@ def getUsers(request):
     if isAdmin_query == 'True' or isAdmin_query == 'False':
         users = users.filter(is_staff=isAdmin_query)
 
-    paginator=Paginator(users,2)
+    paginator=Paginator(users,10)
     
     try:
         users=paginator.page(page)

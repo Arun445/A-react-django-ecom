@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Row, Col, Button, Form, Container, Table } from "react-bootstrap";
-import Message from "../components/Message";
 import { userDetails, updateUserProfile } from "../actions/userActions";
-import Loader from "../components/Loader";
 import { USER_UPDATE_RESET } from "../constants/userConstants";
 import { getOrders } from "../actions/orderActions";
 import { LinkContainer } from "react-router-bootstrap";
+import Message from "../components/Message";
+import Paginate from "../components/Paginate";
+import Loader from "../components/Loader";
 
 function ProfileScreen({ history }) {
   const [name, setName] = useState("");
@@ -26,36 +27,57 @@ function ProfileScreen({ history }) {
   const { success, error: updateError } = userUpdate;
 
   const ordersGet = useSelector((state) => state.ordersGet);
-  const { loading: loadingOrders, orders, error: errorOrders } = ordersGet;
+  const {
+    loading: loadingOrders,
+    orders,
+    error: errorOrders,
+    page,
+    pages,
+    paginated,
+  } = ordersGet;
+
+  let keyword = history.location.search;
+  let location = history.location.pathname;
 
   const dispatch = useDispatch();
   useEffect(() => {
     if (success) {
-      setMessageSuccess("Profile updated");
+      setMessageSuccess("Profile successfully updated");
     }
     if (!userInfo) {
       history.push("/login");
     } else {
-      if (!user || !user.name || success) {
+      if (!user || !user.name || success || paginated) {
         dispatch({ type: USER_UPDATE_RESET });
         dispatch(userDetails());
-        dispatch(getOrders());
+        dispatch(getOrders(keyword));
       } else {
         setName(user.name);
         setEmail(user.email);
       }
     }
-  }, [dispatch, userInfo, history, success, user, orders]);
+  }, [dispatch, userInfo, history, success, user, orders, keyword]);
 
   const submitHandler = (e) => {
     e.preventDefault();
     setMessage("");
     setMessageSuccess("");
 
-    if (password === confirmPassword) {
-      dispatch(updateUserProfile(name, email, password));
-    } else {
+    if (
+      userInfo.name === name &&
+      userInfo.email === email &&
+      !password &&
+      !confirmPassword
+    ) {
+      setMessage("You didn't change anything");
+    } else if (password !== confirmPassword) {
       setMessage("Passwords do not match, please try again");
+    } else if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
+      setMessage(
+        "Password must contain minimum eight characters, at least one letter and one number"
+      );
+    } else {
+      dispatch(updateUserProfile(name, email, password));
     }
   };
   return (
@@ -174,6 +196,12 @@ function ProfileScreen({ history }) {
               </tbody>
             </Table>
           )}
+          <Paginate
+            page={page}
+            pages={pages}
+            location={location}
+            keyword={keyword}
+          />
         </Col>
       </Row>
     </Container>

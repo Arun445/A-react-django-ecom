@@ -23,7 +23,10 @@ h3 {
   height: 200px;
   width: 200px;
 }
-
+.cart-image {
+  height: 120px;
+  width: 120px;
+}
 .google-btn-center {
   width: auto;
   margin-left: 28%;

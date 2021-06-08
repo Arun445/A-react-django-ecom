@@ -76,7 +76,7 @@ function LoginScreen({ history, location }) {
         </Form.Group>
         <Form.Group className="text-center mt-4">
           <h6>
-            <Link to="/">Forgot password?</Link> ·{" "}
+            <Link to="/password_reset">Forgot password?</Link> ·{" "}
             <Link to={redirect ? `/signup?redirect=${redirect}` : "/signup"}>
               Sign up
             </Link>

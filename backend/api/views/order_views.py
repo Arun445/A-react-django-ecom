@@ -39,13 +39,31 @@ def getOrderById(request, pk):
 def getMyOrders(request):
     
     user=request.user
-    order = user.order_set.all()
+    orders = user.order_set.all().order_by('-dateCreated')
     
-    if len(order) == 0:
+    if len(orders) == 0:
         return Response({'detail':'You dont have any orders yet'},status=status.HTTP_400_BAD_REQUEST)
     else:
-        serialier = OrderSerializer(order,many=True)
-        return Response(serialier.data)
+        paginator = Paginator(orders,10)
+        page = request.query_params.get('page')
+        
+        try:
+            orders=paginator.page(page)
+        except PageNotAnInteger:
+            orders=paginator.page(1)
+        except EmptyPage:
+            orders=paginator.page(paginator.num_pages)
+
+        if page== None:
+            page=1
+        serializer = OrderSerializer(orders,many=True)
+
+        page=int(page)
+        
+        return Response({'orders':serializer.data, 'page':page, 'pages':paginator.num_pages})
+
+
+
 
 
 @api_view(['GET'])

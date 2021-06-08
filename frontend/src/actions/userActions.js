@@ -373,18 +373,13 @@ export const deleteUser = (id) => async (dispatch, getState) => {
     });
   }
 };
-export const passwordReset = (email) => async (dispatch, getState) => {
+export const passwordReset = (email) => async (dispatch) => {
   try {
     dispatch({ type: USER_PASSWORD_RESET_REQUEST });
-
-    const {
-      userLogin: { userInfo },
-    } = getState();
 
     const config = {
       headers: {
         "Content-type": "application/json",
-        Authorization: `Bearer ${userInfo.token}`,
       },
     };
 
@@ -409,18 +404,13 @@ export const passwordReset = (email) => async (dispatch, getState) => {
 };
 
 export const passwordResetConfirm =
-  (uid, token, new_password, re_new_password) => async (dispatch, getState) => {
+  (uid, token, new_password, re_new_password) => async (dispatch) => {
     try {
       dispatch({ type: USER_PASSWORD_RESET_CONFIRM_REQUEST });
-
-      const {
-        userLogin: { userInfo },
-      } = getState();
 
       const config = {
         headers: {
           "Content-type": "application/json",
-          Authorization: `Bearer ${userInfo.token}`,
         },
       };
 
@@ -430,7 +420,7 @@ export const passwordResetConfirm =
         new_password,
         re_new_password,
       });
-
+      console.log(body);
       const { data } = await axios.post(
         `/auth/users/reset_password_confirm/`,
         body,

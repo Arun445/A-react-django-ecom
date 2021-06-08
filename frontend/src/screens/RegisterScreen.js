@@ -31,11 +31,14 @@ function RegisterScreen({ history, location }) {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    if (password === confirmPassword) {
-      dispatch(register(name, email, password));
-      setMessage("");
-    } else {
+    if (password !== confirmPassword) {
       setMessage("Passwords do not match, please try again");
+    } else if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
+      setMessage(
+        "Password must contain minimum eight characters, at least one letter and one number"
+      );
+    } else {
+      dispatch(register(name, email, password));
     }
   };
   return (

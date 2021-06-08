@@ -14,6 +14,7 @@ import {
   ORDER_GET_SUCCESS,
   ORDER_GET_FAIL,
   ORDER_GET_RESET,
+  ORDER_GET_PAGINATED,
   ORDER_LIST_REQUEST,
   ORDER_LIST_SUCCESS,
   ORDER_LIST_FAIL,
@@ -86,13 +87,21 @@ export const ordersGetReducer = (state = { orders: [] }, action) => {
       return { loading: true };
 
     case ORDER_GET_SUCCESS:
-      return { loading: false, orders: action.payload };
+      return {
+        loading: false,
+        orders: action.payload.orders,
+        page: action.payload.page,
+        pages: action.payload.pages,
+      };
 
     case ORDER_GET_FAIL:
       return { loading: false, error: action.payload };
 
     case ORDER_GET_RESET:
       return { orders: [] };
+
+    case ORDER_GET_PAGINATED:
+      return { ...state, paginated: true };
 
     default:
       return state;

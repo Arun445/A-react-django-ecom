@@ -2,10 +2,8 @@ import React from "react";
 import { Pagination } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  PRODUCT_DELETE_SELECTED_RESET,
-  PRODUCT_DELETE_SELECTED_PAGINATE,
-} from "../constants/productConstants";
+import { PRODUCT_DELETE_SELECTED_PAGINATE } from "../constants/productConstants";
+import { ORDER_GET_PAGINATED } from "../constants/orderConstants";
 function Paginate({
   pages,
   page,
@@ -49,14 +47,20 @@ function Paginate({
                 ? `/products?keyword=${keyword}&page=${x + 1}${filter}`
                 : location === "/orderlist"
                 ? `/orderlist?keyword=${keyword}&page=${x + 1}${filter}`
-                : location === "/users" &&
-                  `/users?keyword=${keyword}&page=${x + 1}${filter}`
+                : location === "/users"
+                ? `/users?keyword=${keyword}&page=${x + 1}${filter}`
+                : location === "/profile" &&
+                  `/profile?keyword=${keyword}&page=${x + 1}`
             }
           >
             <Pagination.Item
               onClick={
                 location === "/products"
                   ? () => dispatch({ type: PRODUCT_DELETE_SELECTED_PAGINATE })
+                  : location === "/profile"
+                  ? () => {
+                      dispatch({ type: ORDER_GET_PAGINATED });
+                    }
                   : () => {}
               }
               active={x + 1 === page}
