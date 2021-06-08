@@ -51,9 +51,9 @@ function HomeScreen({ history }) {
           <Row>
             <Col sm={12} md={6} lg={4} xl={3}>
               <Card className="my-3  rounded">
-                <Link to={`/items`}>
+                <Link to={`/items?keyword=&page=1&category=electronics`}>
                   <Card.Img
-                    src={process.env.PUBLIC_URL + "/images/electronics.jpg"}
+                    src={"/images/electronics.jpg"}
                     className="product-image"
                   />
                 </Link>
@@ -71,9 +71,9 @@ function HomeScreen({ history }) {
             </Col>
             <Col sm={12} md={6} lg={4} xl={3}>
               <Card className="my-3  rounded">
-                <Link to={`/items`}>
+                <Link to={`/items?keyword=&page=1&category=bikes`}>
                   <Card.Img
-                    src={process.env.PUBLIC_URL + "/images/bikes.jpg"}
+                    src={"/images/bikes.jpg"}
                     className="product-image"
                   />
                 </Link>

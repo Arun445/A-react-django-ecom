@@ -70,6 +70,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'backend.urls'
 
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -187,10 +188,13 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['https://www.googleapis.com/auth/userinfo.ema
 #SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['name, email, first_name, last_name']
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR/'static']
+#STATICFILES_DIRS = [BASE_DIR/'static']
 #STATICFILES_ROOT = [BASE_DIR/'static']
 
-#STATICFILES_DIRS = os.path.join(BASE_DIR,'build/static')
+STATICFILES_DIRS = [os.path.join(
+    BASE_DIR/'static',
+    BASE_DIR/'build/static'
+    )]
 #STATICFILES_ROOT = os.path.join(BASE_DIR,'static')
 
 
