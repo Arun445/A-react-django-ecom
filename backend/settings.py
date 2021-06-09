@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-_#3$pgilh9+6gm!n(s7)icxez474wj&q#vtx8(fa-!dy$%*_uh
 DEBUG = False
 #DEBUG = (os.environ.get('DEBUG_VALUE') == 'True' )
 
-ALLOWED_HOSTS = ['https://pepacom.herokuapp.com/', '127.0.0.1']
+ALLOWED_HOSTS = ['pepacom.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
