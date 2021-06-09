@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO-SECRET-KEYE')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = (os.environ.get('DEBUG_VALUE') == 'True' )
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['https://pepacom.herokuapp.com/', '127.0.0.1']
 
 
 # Application definition
@@ -42,12 +42,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     'api.apps.ApiConfig',
+
     'django_filters',
     'djoser',
     'corsheaders',
     'rest_framework',
     'social_django',
-    'rest_framework_simplejwt'
+    'rest_framework_simplejwt',
+    'storages'
     
 ]
 
@@ -74,7 +76,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'build')],
+        'DIRS': [os.path.join(BASE_DIR, 'frontend/build')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -102,8 +104,18 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
-
+'''
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'react-a-ecom-db',
+        'USER': os.environ.get('RDS_POSTGRESQL_USER'),
+        'PASSWORD': os.environ.get('RDS_POSTGRESQL_PASS'),
+        'HOST': 'database-2.cjiw8hi93vqh.eu-central-1.rds.amazonaws.com',
+        'PORT': 5432
+    }
+}
+'''
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
@@ -137,15 +149,6 @@ USE_L10N = True
 USE_TZ = False
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')
-
-
-
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
@@ -165,38 +168,36 @@ SIMPLE_JWT = {
 }
 
 DJOSER = {
-    #'SET_PASSWORD_RETYPE': True,
-    'PASSWORD_RESET_CONFIRM_URL': 'password_reset_confirm/{uid}/{token}',
+    'PASSWORD_RESET_CONFIRM_URL': '#/password_reset_confirm/{uid}/{token}',
     'SOCIAL_AUTH_TOKEN_STRATEGY': 'djoser.social.token.jwt.TokenStrategy',
     'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': ['http://127.0.0.1:8000', 'http://localhost:3000'],
     'SERIALIZERS': {
-        
         'user_create': 'api.serializers.UserCreateSerializer',
         'user': 'api.serializers.UserCreateSerializer',
         'current_user': 'api.serializers.UserCreateSerializer',
-        
     }
-    
-    
-    
 }
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY ='Google-auth'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'Google-auth-secret'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get('GOOGLE_OAUTH2_CLIENT_ID') 
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get('GOOGLE_OAUTH2_CLIENT_SECRET') 
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile', 'openid']
-#SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['name, email, first_name, last_name']
+
 
 STATIC_URL = '/static/'
-#STATICFILES_DIRS = [BASE_DIR/'static']
-#STATICFILES_ROOT = [BASE_DIR/'static']
 
 STATICFILES_DIRS = [os.path.join(
     BASE_DIR/'static',
-    BASE_DIR/'build/static'
+    BASE_DIR/'frontend/build/static'
     )]
-#STATICFILES_ROOT = os.path.join(BASE_DIR,'static')
-
+STATICFILES_ROOT = os.path.join(BASE_DIR,'staticfiles')
 
 MEDIA_URL='/images/'
 MEDIA_ROOT='static/images'
@@ -205,3 +206,15 @@ MEDIA_ROOT='static/images'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_ALL_ORIGINS = True
 #CORS_ALLOWED_ORIGINS = [    'http://localhost:3000/']
+
+#S3 BUCKET CONFIG
+
+AWS_S3_REGION_NAME = 'eu-west-1'
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = 'react-a-ecom-live'
+
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+#STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
