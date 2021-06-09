@@ -20,10 +20,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('DJANGO-SECRET-KEYE')
+SECRET_KEY = 'django-insecure-_#3$pgilh9+6gm!n(s7)icxez474wj&q#vtx8(fa-!dy$%*_uh'
+#SECRET_KEY = os.environ.get('DJANGO-SECRET-KEYE')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = (os.environ.get('DEBUG_VALUE') == 'True' )
+DEBUG = False
+#DEBUG = (os.environ.get('DEBUG_VALUE') == 'True' )
 
 ALLOWED_HOSTS = ['https://pepacom.herokuapp.com/', '127.0.0.1']
 
@@ -219,3 +221,4 @@ AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 #STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
