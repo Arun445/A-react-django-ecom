@@ -23,9 +23,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO-SECRET-KEYE')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = (os.environ.get('DEBUG_VALUE') == 'True' )
+#DEBUG = (os.environ.get('DEBUG_VALUE') == 'True' )
 
-ALLOWED_HOSTS = ['https://pepacom.herokuapp.com/', '127.0.0.1']
+DEBUG = True
+
+ALLOWED_HOSTS = ['pepacom.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
@@ -56,11 +58,9 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    
-    'social_django.middleware.SocialAuthExceptionMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-
+    'django.middleware.common.CommonMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -98,7 +98,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -116,7 +116,7 @@ DATABASES = {
         'PORT': 5432
     }
 }
-'''
+
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
@@ -195,16 +195,15 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['https://www.googleapis.com/auth/userinfo.ema
 STATIC_URL = '/static/'
 MEDIA_URL='/images/'
 
-#STATICFILES_ROOT = BASE_DIR,'staticfiles'
-
-STATIC_ROOT = BASE_DIR,'staticfiles'
-MEDIA_ROOT= BASE_DIR / 'static/images'
-
 STATICFILES_DIRS = [
     BASE_DIR/'static',
     BASE_DIR/'frontend/build/static'
     ]
+#STATICFILES_ROOT = BASE_DIR/'staticfiles'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+
+MEDIA_ROOT= BASE_DIR / 'static/images'
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -223,3 +222,6 @@ AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 #STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+if os.getcwd() == '/app':
+    DEBUG = False
