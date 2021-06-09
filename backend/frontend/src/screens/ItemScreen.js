@@ -26,10 +26,9 @@ function ItemScreen({ history }) {
   let params = queryString.parse(history.location.search);
 
   useEffect(() => {
+    dispatch(listProducts(keyword));
     if (success) {
       dispatch({ type: PRODUCT_LIST_RESET_SUCCESS });
-    } else {
-      dispatch(listProducts(keyword));
     }
   }, [dispatch, keyword]);
 
