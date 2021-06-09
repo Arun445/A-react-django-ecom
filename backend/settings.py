@@ -141,7 +141,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'europe/vilnius'
+TIME_ZONE = 'Europe/Vilnius'
 
 USE_I18N = True
 
