@@ -39,6 +39,7 @@ import {
   USER_PASSWORD_RESET_CONFIRM_REQUEST,
   USER_PASSWORD_RESET_CONFIRM_SUCCESS,
   USER_PASSWORD_RESET_CONFIRM_FAIL,
+  USER_PASSWORD_RESET_CONFIRM_RESET,
 } from "../constants/userConstants";
 
 export const userLoginReducer = (state = {}, action) => {
@@ -234,7 +235,7 @@ export const userResetPasswordConfirmReducer = (
       return {
         loading: false,
         success: true,
-        changed: "Your password has been changed",
+        changed: "Your password has been successfully changed",
       };
 
     case USER_PASSWORD_RESET_CONFIRM_FAIL:
@@ -242,6 +243,10 @@ export const userResetPasswordConfirmReducer = (
         ...state,
         loading: false,
         error: "Password change session timeout",
+      };
+    case USER_PASSWORD_RESET_CONFIRM_RESET:
+      return {
+        success: false,
       };
 
     default:
