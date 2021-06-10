@@ -200,9 +200,9 @@ STATICFILES_DIRS = [
     BASE_DIR/'frontend/build/static'
     ]
 #STATICFILES_ROOT = BASE_DIR/'staticfiles'
+
+
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-
 MEDIA_ROOT= BASE_DIR / 'static/images'
 
 
