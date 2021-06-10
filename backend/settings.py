@@ -25,7 +25,7 @@ SECRET_KEY = os.environ.get('DJANGO-SECRET-KEYE')
 # SECURITY WARNING: don't run with debug turned on in production!
 #DEBUG = (os.environ.get('DEBUG_VALUE') == 'True' )
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['pepacom.herokuapp.com', '127.0.0.1']
 
@@ -171,7 +171,7 @@ SIMPLE_JWT = {
 DJOSER = {
     'PASSWORD_RESET_CONFIRM_URL': '#/password_reset_confirm/{uid}/{token}',
     'SOCIAL_AUTH_TOKEN_STRATEGY': 'djoser.social.token.jwt.TokenStrategy',
-    'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': ['http://localhost:3000'],
+    'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': ['https://pepacom.herokuapp.com/'],
     'SERIALIZERS': {
         'user_create': 'api.serializers.UserCreateSerializer',
         'user': 'api.serializers.UserCreateSerializer',
@@ -200,9 +200,9 @@ STATICFILES_DIRS = [
     BASE_DIR/'frontend/build/static'
     ]
 #STATICFILES_ROOT = BASE_DIR/'staticfiles'
-
-
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+
 MEDIA_ROOT= BASE_DIR / 'static/images'
 
 
@@ -223,5 +223,5 @@ AWS_DEFAULT_ACL = None
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 #STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-#if os.getcwd() == '/app':
-#    DEBUG = False
+if os.getcwd() == '/app':
+    DEBUG = False

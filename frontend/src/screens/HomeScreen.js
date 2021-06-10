@@ -51,7 +51,7 @@ function HomeScreen({ history }) {
               <Card className="my-3  rounded">
                 <Link to={`/items?keyword=&page=1&category=electronics`}>
                   <Card.Img
-                    src={"/images/electronics.jpg"}
+                    src="https://react-a-ecom-live.s3-eu-west-1.amazonaws.com/electronics.jpg"
                     className="product-image"
                   />
                 </Link>
@@ -71,7 +71,7 @@ function HomeScreen({ history }) {
               <Card className="my-3  rounded">
                 <Link to={`/items?keyword=&page=1&category=bikes`}>
                   <Card.Img
-                    src={"/images/bikes.jpg"}
+                    src="https://react-a-ecom-live.s3-eu-west-1.amazonaws.com/bikes.jpg"
                     className="product-image"
                   />
                 </Link>
