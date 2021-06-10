@@ -4,6 +4,7 @@ import { Form, Button } from "react-bootstrap";
 import FormContainer from "../components/FormContainer";
 import { useDispatch, useSelector } from "react-redux";
 import { passwordResetConfirm } from "../actions/userActions";
+import { USER_PASSWORD_RESET_CONFIRM_RESET } from "../constants/userConstants";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 
@@ -11,6 +12,7 @@ function PasswordResetConfirmScreen({ history, location, match }) {
   const [newPassword, setNewPassword] = useState("");
   const [reNewPassword, setReNewPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [messageSuccess, setMessageSuccess] = useState("");
 
   const redirect = location.search ? location.search.split("=")[1] : "/";
   const dispatch = useDispatch();
@@ -21,9 +23,14 @@ function PasswordResetConfirmScreen({ history, location, match }) {
   const userResetPasswordConfirm = useSelector(
     (state) => state.userResetPasswordConfirm
   );
-  const { loading, error } = userResetPasswordConfirm;
+  const { loading, error, changed, success } = userResetPasswordConfirm;
 
-  useEffect(() => {}, [dispatch, history, redirect, userInfo]);
+  useEffect(() => {
+    if (success) {
+      setMessageSuccess(changed);
+      dispatch({ type: USER_PASSWORD_RESET_CONFIRM_RESET });
+    }
+  }, [dispatch, history, redirect, userInfo, success]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -37,6 +44,7 @@ function PasswordResetConfirmScreen({ history, location, match }) {
       );
     } else {
       setMessage("");
+      setMessageSuccess("");
       dispatch(passwordResetConfirm(uid, token, newPassword, reNewPassword));
     }
   };
@@ -45,18 +53,18 @@ function PasswordResetConfirmScreen({ history, location, match }) {
     <div></div>
   ) : (
     <FormContainer>
-      <h1 className="text-center mt-4">Password Reset Request</h1>
+      <h1 className="text-center mt-4 mb-5">Password Reset</h1>
 
       {error && <Message variant="danger">{error}</Message>}
-      {redirect !== "/" && (
-        <Message variant="info">If you want to continue, please log in</Message>
-      )}
+
       {loading ? (
         <Loader />
+      ) : message ? (
+        <Message variant="danger">{message}</Message>
       ) : (
-        message && <Message variant="danger">{message}</Message>
+        messageSuccess && <Message variant="success">{messageSuccess}</Message>
       )}
-      <Form onSubmit={submitHandler} className="mt-5">
+      <Form onSubmit={submitHandler}>
         <Form.Group controlId="formBasicPassword" className="rounded">
           <Form.Label>Password</Form.Label>
           <Form.Control

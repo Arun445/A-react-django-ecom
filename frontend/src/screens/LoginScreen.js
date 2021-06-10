@@ -92,7 +92,7 @@ function LoginScreen({ history, location }) {
       >
         <Image
           className="google-btn "
-          src={process.env.PUBLIC_URL + "/images/btn_google.png"}
+          src="https://react-a-ecom-live.s3-eu-west-1.amazonaws.com/btn_google.png"
         ></Image>
       </Button>
     </FormContainer>
