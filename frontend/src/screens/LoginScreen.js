@@ -32,8 +32,9 @@ function LoginScreen({ history, location }) {
   const continueWithGoogle = async () => {
     try {
       const { data } = await axios.get(
-        `/auth/o/google-oauth2/?redirect_uri=https://pepacom.herokuapp.com`
+        "/auth/o/google-oauth2/?redirect_uri=https://pepacom.herokuapp.com"
       );
+      console.log(data.authorization_url);
       window.location.replace(data.authorization_url);
     } catch (err) {}
   };

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Row, Col, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
@@ -15,24 +15,27 @@ function HomeScreen({ history }) {
   const dispatch = useDispatch();
   const productList = useSelector((state) => state.productList);
   const { error, loading } = productList;
+  const [googleLogin, setGoogleLogin] = useState("");
 
   const userLogin = useSelector((state) => state.userLogin);
-  const { loading: loadingUser } = userLogin;
+  const { loading: loadingUser, userInfo } = userLogin;
 
-  let keyword = history.location.search;
+  let keyword = window.location.search;
 
   useEffect(() => {
     const values = queryString.parse(keyword);
     const state = values.state ? values.state : null;
     const code = values.code ? values.code : null;
-    if (state && code) {
+    if (keyword && userInfo) {
+      window.location.href = "https://pepacom.herokuapp.com/";
+    }
+    if (state && code && !googleLogin) {
+      setGoogleLogin(true);
       dispatch(googleAuthenticate(state, code));
     }
-    if (keyword) {
-      history.push("/");
-    }
+
     dispatch(listProducts(keyword));
-  }, [dispatch, history, keyword]);
+  }, [dispatch, history, keyword, userInfo]);
 
   return (
     <div>
