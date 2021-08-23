@@ -25,7 +25,7 @@ SECRET_KEY = os.environ.get('DJANGO-SECRET-KEYE')
 # SECURITY WARNING: don't run with debug turned on in production!
 #DEBUG = (os.environ.get('DEBUG_VALUE') == 'True' )
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['pepacom.herokuapp.com', '127.0.0.1','localhost:3000']
 
