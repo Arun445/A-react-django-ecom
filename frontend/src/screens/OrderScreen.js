@@ -117,7 +117,7 @@ function OrderScreen({ history, match }) {
                 , {order.shippingAddress.city}, {order.shippingAddress.zipcode}
               </p>
               <p>Shipping Method: {order.shippingAddress.shippingMethod}</p>
-              {order.shippingAddress.shippingLocation && (
+              {order.shippingAddress.shippingLocation !== "..." && (
                 <p>
                   Parcel Terminal Location:{" "}
                   {order.shippingAddress.shippingLocation}
