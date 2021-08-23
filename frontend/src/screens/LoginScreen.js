@@ -19,7 +19,8 @@ function LoginScreen({ history, location }) {
   const { loading, userInfo, error } = userLogin;
 
   useEffect(() => {
-    if (userInfo) {
+    if (error) {
+    } else if (userInfo) {
       history.push(redirect);
     }
   }, [dispatch, history, redirect, userInfo]);
