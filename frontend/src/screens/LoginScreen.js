@@ -20,10 +20,8 @@ function LoginScreen({ history, location }) {
 
   useEffect(() => {
     if (error) {
-      console.log(error);
     } else if (userInfo) {
       history.push(redirect);
-      console.log(error);
     }
   }, [dispatch, history, redirect, userInfo]);
 
@@ -49,9 +47,7 @@ function LoginScreen({ history, location }) {
 
       {error && <Message variant="danger">{error}</Message>}
       {redirect !== "/" && (
-        <Message variant="info">
-          If you want to continue, please log inAA
-        </Message>
+        <Message variant="info">If you want to continue, please log in</Message>
       )}
       {loading && <Loader />}
       <Form onSubmit={submitHandler}>
