@@ -27,7 +27,7 @@ SECRET_KEY = os.environ.get('DJANGO-SECRET-KEYE')
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['pepacom.herokuapp.com', '127.0.0.1','localhost:3000']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
