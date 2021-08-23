@@ -25,7 +25,7 @@ SECRET_KEY = os.environ.get('DJANGO-SECRET-KEYE')
 # SECURITY WARNING: don't run with debug turned on in production!
 #DEBUG = (os.environ.get('DEBUG_VALUE') == 'True' )
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['pepacom.herokuapp.com', '127.0.0.1','localhost:3000']
 
@@ -223,5 +223,5 @@ AWS_DEFAULT_ACL = None
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 #STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-if os.getcwd() == '/app':
-    DEBUG = False
+#if os.getcwd() == '/app':
+#    DEBUG = False
