@@ -105,10 +105,7 @@ export const googleAuthenticate =
       } catch (error) {
         dispatch({
           type: USER_GOOGLE_AUTH_FAIL,
-          payload:
-            error.response && error.response.data.detail
-              ? error.response.data.detail
-              : error.message,
+          payload: "user taken",
         });
       }
     }

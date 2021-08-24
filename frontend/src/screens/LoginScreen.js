@@ -86,16 +86,19 @@ function LoginScreen({ history, location }) {
         </Button>
       </Form>
       <h6 className="text-center mt-3">or</h6>
-      <Button
-        variant="light"
-        onClick={continueWithGoogle}
-        className="google-btn-center"
-      >
-        <Image
-          className="google-btn "
-          src="https://react-a-ecom-live.s3-eu-west-1.amazonaws.com/btn_google.png"
-        ></Image>
-      </Button>
+      <div className="google-btn-container">
+        <div className="google-btn" onClick={continueWithGoogle}>
+          <div className="google-icon-wrapper">
+            <img
+              className="google-icon-svg"
+              src="https://react-a-ecom-live.s3.eu-west-1.amazonaws.com/google.svg"
+            />
+          </div>
+          <p className="btn-text">
+            <b>Sign in with Google</b>
+          </p>
+        </div>
+      </div>
     </FormContainer>
   );
 }

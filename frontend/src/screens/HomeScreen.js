@@ -10,7 +10,7 @@ import ProductCarousel from "../components/ProductCarousel";
 import { listProducts } from "../actions/productActions";
 import { googleAuthenticate } from "../actions/userActions";
 import queryString from "query-string";
-
+import { USER_GOOGLE_AUTH_FAIL } from "../constants/userConstants";
 function HomeScreen({ history }) {
   const dispatch = useDispatch();
   const productList = useSelector((state) => state.productList);
@@ -18,16 +18,21 @@ function HomeScreen({ history }) {
   const [googleLogin, setGoogleLogin] = useState("");
 
   const userLogin = useSelector((state) => state.userLogin);
-  const { loading: loadingUser, userInfo } = userLogin;
+  const { loading: loadingUser, userInfo, error: loginError } = userLogin;
 
   let keyword = window.location.search;
-
   useEffect(() => {
     const values = queryString.parse(keyword);
     const state = values.state ? values.state : null;
     const code = values.code ? values.code : null;
     if (keyword && userInfo) {
       window.location.href = "https://pepacom.herokuapp.com/";
+    } else if (loginError === "user taken") {
+      dispatch({
+        type: USER_GOOGLE_AUTH_FAIL,
+        payload: "There is already an account with this email",
+      });
+      history.push("/login");
     }
     if (state && code && !googleLogin) {
       setGoogleLogin(true);
