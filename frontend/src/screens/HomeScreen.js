@@ -10,7 +10,10 @@ import ProductCarousel from "../components/ProductCarousel";
 import { listProducts } from "../actions/productActions";
 import { googleAuthenticate } from "../actions/userActions";
 import queryString from "query-string";
-import { USER_GOOGLE_AUTH_FAIL } from "../constants/userConstants";
+import {
+  USER_GOOGLE_AUTH_FAIL,
+  USER_GOOGLE_AUTH_FAIL_TIMES,
+} from "../constants/userConstants";
 function HomeScreen({ history }) {
   const dispatch = useDispatch();
   const productList = useSelector((state) => state.productList);
@@ -18,7 +21,12 @@ function HomeScreen({ history }) {
   const [googleLogin, setGoogleLogin] = useState("");
 
   const userLogin = useSelector((state) => state.userLogin);
-  const { loading: loadingUser, userInfo, error: loginError } = userLogin;
+  const {
+    loading: loadingUser,
+    userInfo,
+    error: loginError,
+    errorTimes,
+  } = userLogin;
 
   let keyword = window.location.search;
   useEffect(() => {
@@ -27,10 +35,10 @@ function HomeScreen({ history }) {
     const code = values.code ? values.code : null;
     if (keyword && userInfo) {
       window.location.href = "https://pepacom.herokuapp.com/";
-    } else if (loginError === "user taken") {
+    } else if (loginError && errorTimes === 0) {
       dispatch({
-        type: USER_GOOGLE_AUTH_FAIL,
-        payload: "There is already an account with this email",
+        type: USER_GOOGLE_AUTH_FAIL_TIMES,
+        payload: 1,
       });
       history.push("/login");
     }
@@ -40,7 +48,7 @@ function HomeScreen({ history }) {
     }
 
     dispatch(listProducts(keyword));
-  }, [dispatch, history, keyword, userInfo]);
+  }, [dispatch, history, keyword, userInfo, loginError]);
 
   return (
     <div>

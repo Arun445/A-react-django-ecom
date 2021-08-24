@@ -32,6 +32,7 @@ import {
   USER_GOOGLE_AUTH_REQUEST,
   USER_GOOGLE_AUTH_SUCCESS,
   USER_GOOGLE_AUTH_FAIL,
+  USER_GOOGLE_AUTH_FAIL_TIMES,
   USER_PASSWORD_RESET_REQUEST,
   USER_PASSWORD_RESET_SUCCESS,
   USER_PASSWORD_RESET_FAIL,
@@ -42,7 +43,7 @@ import {
   USER_PASSWORD_RESET_CONFIRM_RESET,
 } from "../constants/userConstants";
 
-export const userLoginReducer = (state = {}, action) => {
+export const userLoginReducer = (state = { errorTimes: 0 }, action) => {
   switch (action.type) {
     case USER_LOGIN_REQUEST:
       return { loading: true };
@@ -54,14 +55,17 @@ export const userLoginReducer = (state = {}, action) => {
       return { loading: false, error: action.payload };
 
     case USER_GOOGLE_AUTH_REQUEST:
-      return { loading: true };
+      return { ...state, loading: true };
 
     case USER_GOOGLE_AUTH_SUCCESS:
       localStorage.setItem("access", action.payload.access);
       return { loading: false, googleInfo: action.payload };
 
     case USER_GOOGLE_AUTH_FAIL:
-      return { loading: false, error: action.payload };
+      return { ...state, loading: false, error: action.payload };
+
+    case USER_GOOGLE_AUTH_FAIL_TIMES:
+      return { ...state, errorTimes: action.payload };
 
     case USER_LOGOUT:
       return {};

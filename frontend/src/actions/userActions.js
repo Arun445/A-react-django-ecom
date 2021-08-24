@@ -29,6 +29,7 @@ import {
   USER_GOOGLE_AUTH_REQUEST,
   USER_GOOGLE_AUTH_SUCCESS,
   USER_GOOGLE_AUTH_FAIL,
+  USER_GOOGLE_AUTH_FAIL_TIMES,
   USER_PASSWORD_RESET_REQUEST,
   USER_PASSWORD_RESET_SUCCESS,
   USER_PASSWORD_RESET_FAIL,
@@ -105,7 +106,7 @@ export const googleAuthenticate =
       } catch (error) {
         dispatch({
           type: USER_GOOGLE_AUTH_FAIL,
-          payload: "user taken",
+          payload: "There is already an account with this email",
         });
       }
     }
