@@ -53,7 +53,7 @@ function HomeScreen({ history }) {
   return (
     <div>
       <h1>Lastest Products</h1>
-      {!keyword && <ProductCarousel />}
+      <ProductCarousel />
       <h1 className="mt-5 text-center">Most popular categories</h1>
 
       {loading || loadingUser ? (
