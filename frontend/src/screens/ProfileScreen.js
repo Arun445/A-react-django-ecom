@@ -64,15 +64,13 @@ function ProfileScreen({ history }) {
     setMessageSuccess("");
 
     if (
-      userInfo.name === name &&
-      userInfo.email === email &&
-      !password &&
-      !confirmPassword
+      userInfo.name !== name ||
+      userInfo.email !== email
     ) {
-      setMessage("You didn't change anything");
+      dispatch(updateUserProfile(name, email, password));
     } else if (password !== confirmPassword) {
       setMessage("Passwords do not match, please try again");
-    } else if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
+    } else if (password && !/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
       setMessage(
         "Password must contain minimum eight characters, at least one letter and one number"
       );

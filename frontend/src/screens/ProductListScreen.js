@@ -237,7 +237,7 @@ function ProductListScreen({ history }) {
                       <th>CATEGORY</th>
                       <th>PRICE</th>
                       <th>STOCK</th>
-                      <th>Edit</th>
+                      <th className='padding-right'>Edit</th>
                     </tr>
                   </thead>
                   <tbody>

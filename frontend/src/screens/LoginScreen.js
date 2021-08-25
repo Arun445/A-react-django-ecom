@@ -32,8 +32,9 @@ function LoginScreen({ history, location }) {
   const continueWithGoogle = async () => {
     try {
       const { data } = await axios.get(
-        `/auth/o/google-oauth2/?redirect_uri=http://localhost:3000`
+        "/auth/o/google-oauth2/?redirect_uri=https://pepacom.herokuapp.com"
       );
+      console.log(data.authorization_url);
       window.location.replace(data.authorization_url);
     } catch (err) {}
   };
@@ -85,16 +86,19 @@ function LoginScreen({ history, location }) {
         </Button>
       </Form>
       <h6 className="text-center mt-3">or</h6>
-      <Button
-        variant="light"
-        onClick={continueWithGoogle}
-        className="google-btn-center"
-      >
-        <Image
-          className="google-btn "
-          src="https://react-a-ecom-live.s3-eu-west-1.amazonaws.com/btn_google.png"
-        ></Image>
-      </Button>
+      <div className="google-btn-container">
+        <div className="google-btn" onClick={continueWithGoogle}>
+          <div className="google-icon-wrapper">
+            <img
+              className="google-icon-svg"
+              src="https://react-a-ecom-live.s3.eu-west-1.amazonaws.com/google.svg"
+            />
+          </div>
+          <p className="btn-text">
+            <b>Sign in with Google</b>
+          </p>
+        </div>
+      </div>
     </FormContainer>
   );
 }

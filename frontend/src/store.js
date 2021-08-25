@@ -88,7 +88,7 @@ const initialState = {
 
     paymentMethod: paymentMethodFromStorage,
   },
-  userLogin: { userInfo: userInfoFromStorage },
+  userLogin: { userInfo: userInfoFromStorage, errorTimes: 0 },
 };
 
 const middleware = [thunk];
