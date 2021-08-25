@@ -5,7 +5,7 @@
 <li>Leave a review with a 5 star rating system.</li>
   <li>Check when your item will arrive in your profile</li>
   </ul>
- <img src='static/images/Image2.png'> 
+ <img src='static/images/Image3.png'> 
   
 <h3>Admin capabilities</h3>
 <ul>
@@ -14,4 +14,5 @@
   <li>Give any user admin privilegies</li>
   </ul>
 <img src='static/images/Image1.png'> 
+<img src='static/images/Image2.png'> 
 
